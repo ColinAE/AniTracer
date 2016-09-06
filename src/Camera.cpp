@@ -32,5 +32,5 @@ std::vector<Ray> Camera::shootAll(){
 	Normal vpn(direction);
 
 
-	falaksdjflkajsd;lkfja;slkdfj;laksdjf;lkasjd;lfkjasdl;kfj;alskdjflkasdjflkasjdlkfjalksdfj;laksdjflk
+	lineslineslines
 }
