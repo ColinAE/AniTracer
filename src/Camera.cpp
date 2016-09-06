@@ -30,4 +30,7 @@ std::vector<Ray> Camera::shootAll(){
 	Vector look(lookat);
 	Vector direction(lookat - focalPoint);
 	Normal vpn(direction);
+
+
+	fasdfsd
 }
