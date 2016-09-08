@@ -79,11 +79,13 @@ public:
 
 class Ray{
 private:
-	Point center;
+	Point origin;
 	Normal direction;
 public:
 	Ray();
 	Ray(const Point &, const Vector &);
+	Normal getDirection(){ return direction; }
+	Vector getOrigin(){ return origin; }
 };
 
 #endif

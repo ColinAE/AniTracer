@@ -49,6 +49,12 @@ string Model::toString(){
 	return collectVertices;
 }
 
+void Model::update(tMatrix trans){
+	std::for_each(faces.begin(), faces.end(), [&](Polygon &face){
+		face.update(trans);
+	});
+}
+
 Light::Light(double red, double green, double blue, double x, double y, double z, bool notAmbient){
 	rgb = RGB(red, green, blue);
 	position = Point(x, y, z);
@@ -67,7 +73,7 @@ Material::Material(int mindex, int begin, int end, double lambdaOne, double lamb
 	this->translucence = translucence;
 }
 
-Object::Object(Model* model, const std::vector<Material> &mats, int position){
+Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position){
 	this->model = model;
 	for(unsigned int i = 0; i < mats.size(); i++){
 		Material current = mats.at(i);
@@ -78,14 +84,13 @@ Object::Object(Model* model, const std::vector<Material> &mats, int position){
 	}
 }
 
-Object::Object(const Object &source){
+Polyhedron::Polyhedron(const Polyhedron &source){
 	model = new Model(*(source.model));
 	materials = source.materials;
 	hasMaterial = source.hasMaterial;
-	offset = source.offset;
 }
 
-string Object::toString(){
+string Polyhedron::toString(){
 	int vertexCount = model->countVertices();
 	int faceCount = model->countFaces();
 	string body = "";
@@ -100,8 +105,16 @@ string Object::toString(){
 	return body;
 }
 
-Object::~Object(){
+Polyhedron::~Polyhedron(){
 	delete model;
+}
+
+bool Polyhedron::collide(const Ray &ray){
+
+}
+
+void Polyhedron::update(tMatrix trans){
+	model->update(trans);
 }
 
 Scene::Scene(const Camera &camera, const std::vector<Model*> &models, const std::vector<Light> &lights, const std::vector<Material> &materials){
@@ -117,7 +130,7 @@ Scene::Scene(const Camera &camera, const std::vector<Model*> &models, const std:
 				objMats.push_back(materials.at(j));
 			}
 		}
-		objects.push_back(Object(current, objMats, i));
+		objects.push_back(Polyhedron(current, objMats, i));
 	}
 	std::cout << "object size: " << objects.size() << std::endl;
 }
@@ -128,8 +141,8 @@ Scene::Scene(const Scene &other){
 	this->camera = other.camera;
 }
 
-void Scene::setObjOffsetMatrix(tMatrix update, int objnum){
-	objects.at(objnum).setOffset(update);
+void Scene::update(tMatrix trans, int objnum){
+	objects.at(objnum).update(trans);
 }
 
 std::vector<std::vector<string>> Scene::toString(){
@@ -143,4 +156,33 @@ std::vector<std::vector<string>> Scene::toString(){
 		allInfo.push_back(objInfo);
 	});
 	return allInfo;
+}
+
+RGB Scene::see(const Ray &ray){
+	std::vector<Collision> all;
+	std::for_each(objects.begin(), objects.end(), [&](Object object){
+		all.push_back(object.collide(ray));
+	});
+	Collision closest = closestCollision(all);
+	return color(closest);
+}
+
+Collision closestCollision(const std::vector<Collision> &all){
+	Collision lowest;
+	std::for_each(all.begin(), all.end(), [&](Collision collision){
+
+	});
+}
+
+RGB color(const Collision &closest){
+
+}
+
+std::vector<RGB> Scene::trace(){
+	std::vector<Ray> rays = camera.shootAll();
+	std::vector<RGB> colors;
+	std::for_each(rays.begin(), rays.end(), [&](Ray ray){
+		colors.push_back(see(ray));
+	});
+	return colors;
 }

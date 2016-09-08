@@ -42,6 +42,8 @@ public:
 	int getOriginalFaceCount() { return faceCount; }
 	string toString();
 	void addFace(Polygon newface){ faces.push_back(newface); }
+	gar collide(const Ray &);
+	void update(tMatrix);
 };
 
 class Light {
@@ -75,24 +77,29 @@ public:
 };
 
 class Object {
+public:
+	virtual Collision collide();
+	virtual void update(tMatrix);
+	virtual ~Object();
+	virtual string toString();
+};
+
+class Polyhedron : public Object {
 private:
 	Model* model;
 	std::vector<Material> materials;
 	bool hasMaterial = false;
-	tMatrix offset = Identity();
 
 public:
-	Object(Model*, const std::vector<Material> &, int);
-	Object(const Object &);
-	~Object();
+	Polyhedron(Model *, const std::vector<Material> &, int);
+	Polyhedron(const Polyhedron &);
+	virtual ~Polyhedron();
 	string getName() { return model->getName(); }
 	string toString();
-	void setOffset(tMatrix update){ offset = update; }
-};
+	virtual Collision collide(const Ray &);
+	void update(tMatrix);
 
-class Polyhedron : public Object {
-public:
-	Polyhedron(const Model *, const std::vector<Material> &, int);
+
 };
 
 class Scene {
@@ -100,12 +107,17 @@ private:
 	std::vector<Object> objects;
 	std::vector<Light> lights;
 	Camera camera;
+
+	RGB see(const Ray &);
+	Collision closestCollision(const std::vector<Collision> &);
+	RGB color(const Collision &);
 public:
 	Scene(const Camera &, const std::vector<Model*> &, const std::vector<Light> &, const std::vector<Material> &);
 	Scene(const Scene &);
-	void setObjOffsetMatrix(tMatrix, int);
+	void update(tMatrix, int);
 	int objCount(){ return objects.size(); }
 	std::vector<std::vector<string>> toString();
+	std::vector<RGB> trace();
 };
 
 #endif

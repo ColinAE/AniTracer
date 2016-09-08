@@ -109,6 +109,18 @@ Normal::Normal(const Vector &other) : Vector(){
 	z = normal.Z();
 }
 
+Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
+	Vector one = unconstrainedPolygon.at(0);
+	Vector two= unconstrainedPolygon.at(1);
+	Vector three = unconstrainedPolygon.at(2);
+	Vector left = two - one;
+	Vector right = three - one;
+	Vector direction = left.cross(right);
+	x = direction.X();
+	y = direction.Y();
+	z = direction.Z();
+}
+
 string Vertex::toString() const{
 	string xyz = dtos(x) + " " + dtos(y) + " " + dtos(z) + "\n";
 	return xyz;
@@ -120,7 +132,7 @@ Ray::Ray(){
 }
 
 Ray::Ray(const Point &center, const Vector &direction){
-	this->center = center;
+	this->origin = center;
 	this->direction = direction;
 }
 

@@ -62,7 +62,7 @@ std::vector<double> camin(string usein, unsigned int inlength){
 	try{
 		std::vector<double> ret;
 		for(int i = 0; i < bound; i++){
-			double in = stod(holder, &pos);
+			double in = std::stod(holder, &pos);
 			ret.push_back(in);
 			holder = holder.substr(pos, holder.length());
 		}

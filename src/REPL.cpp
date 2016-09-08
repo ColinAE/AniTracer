@@ -106,7 +106,7 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				break;
 			case 'F':
 				trans = transformer.transformationMatrix();
-				set->setObjOffsetMatrix(trans, objnum);
+				set->update(trans, objnum);
 				end = true;
 				break;
 			case 'W':

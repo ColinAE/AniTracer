@@ -35,18 +35,41 @@ string Polygon::toString() const{
 	return collectAll;
 }
 
-/*
-void Polygon::transform(tMatrix transformation){
-	std::vector<Vertex> newVertices;
-	for(int i = 0; i < vertices.size(); i++){
-		Vertex current = vertices.at(i);
-		newVertices.push_back(Vertex(transformation * current));
-	}
-	vertices = newVertices;
-	center = Point(transformation * center);
-	norm = Normal(transformation * norm);
+void Polygon::update(tMatrix trans){
+	std::for_each(vertices.begin(), vertices.end(), [&](Vertex &vertex){
+		vertex = trans.vmultiply(vertex);
+	});
 }
-*/
+
+Collision Polygon::triangleCollision(const Ray &ray, const std::vector<Vertex> &vertices){
+	Vector a = vertices.at(0);
+	Vector b = vertices.at(1);
+	Vector c = vertices.at(2);
+
+	Vector c1 = a - b;
+	Vector c2 = a - c;
+	Normal D = ray.direction();
+	Vector aug = a - ray.origin();
+
+	double maxlen = -1; //TODO: what does this do?
+
+	double M = calcM(c1, c2, D);
+	double tau = calcTau(c1, c2, aug, M);
+
+	if(tau + epsilon < 0 || tau - epsilon > maxlen){
+		return false;
+	}
+	double gamma = calcGamma(c1, D, aug, M);
+	//cout << "GAMMA: " << gamma << endl;
+	if(gamma + epsilon < 0 || gamma - epsilon > 1){
+		return false;
+	}
+	double beta = calcBeta(c2, D, aug, M);
+	//cout << "BETA: " << beta << endl;
+	if(beta + epsilon < 0 || beta - epsilon > 1 - gamma)
+		return false;
+
+}
 
 Polygon::~Polygon() {
 	// TODO Auto-generated destructor stub

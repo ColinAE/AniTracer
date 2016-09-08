@@ -18,6 +18,8 @@ private:
 	Vector vup;
 	double focalLength;
 	Screen screen;
+
+	double calcMidzoneOffset(const Vector &, const Vector &, const Vector &);
 public:
 	Camera();
 	Camera(Point, Point, Vector, double, Screen);

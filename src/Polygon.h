@@ -22,6 +22,8 @@ private:
 	int vertexCount;
 	Point center;
 	Normal norm;
+
+	Collision Polygon::detectTriangleCollision(const Ray &, const std::vector<Vertex> &);
 public:
 	Polygon();
 	Polygon(const std::vector<Vertex> &vertices);
@@ -31,6 +33,7 @@ public:
 	Vertex operator[](int index) const { return vertices[index]; }
 	Normal normal() const { return norm; }
 	string toString() const;
+	void update(tMatrix trans);
 };
 
 #endif /* POLYGON_H_ */

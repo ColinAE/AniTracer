@@ -163,6 +163,9 @@ int main(int argc, char *argv[]){
 		break;
 	case 2:
 
+		break;
+	default:
+		break;
 	}
 
 	//TODO: error checking depending on protocol
