@@ -13,11 +13,13 @@ class RGB{
 protected:
 	double r, g, b;
 public:
+	RGB();
 	RGB(double, double, double);
 	double red() const { return r; }
 	double green() const { return g; }
 	double blue() const { return b; }
 	RGB operator+(const RGB &);
+	RGB operator*(const double &);
 };
 
 //Red-Green-Blue color object defined by three integers 0-255 range

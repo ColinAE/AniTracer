@@ -8,6 +8,13 @@
 #include "RGB.h"
 
 //RGB definitions
+
+RGB::RGB(){
+	r = 0;
+	g = 0;
+	b = 0;
+}
+
 RGB::RGB(double red, double green, double blue){
 	r = red;
 	g = green;
@@ -19,6 +26,10 @@ RGB RGB::operator+(const RGB &other){
 	double green = g + other.green();
 	double blue = b + other.blue();
 	return RGB(red, green, blue);
+}
+
+RGB RGB::operator*(const double &scalar){
+	return RGB(scalar * r, scalar * g, scalar * b);
 }
 
 //sRGB definitions

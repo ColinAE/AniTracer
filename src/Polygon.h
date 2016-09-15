@@ -20,20 +20,20 @@ class Polygon{
 private:
 	std::vector<Vertex> vertices;
 	int vertexCount;
-	Point center;
+	Point center; //centroid of polygon
 	Normal norm;
 
-	Collision Polygon::detectTriangleCollision(const Ray &, const std::vector<Vertex> &);
 public:
 	Polygon();
 	Polygon(const std::vector<Vertex> &vertices);
 	~Polygon();
 	int getVertexCount() const { return vertexCount; }
-	Point centroid() const {return center; }
+	Point centroid() const { return center; }
 	Vertex operator[](int index) const { return vertices[index]; }
 	Normal normal() const { return norm; }
 	string toString() const;
-	void update(tMatrix trans);
+	void update(const tMatrix trans);
+	double collide(const Ray &);
 };
 
 #endif /* POLYGON_H_ */

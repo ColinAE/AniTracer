@@ -69,11 +69,6 @@ double Vector::magnitude() const{
 	return sqrt(ax + ay + az);
 }
 
-//Normal Vector::normalize() const{
-//	return Normal(this);
-//}
-
-//TODO: check this extensively
 Vector Vector::cross(const Vector &other) const{
 	double a = (y * other.Z()) - (z * other.Y());
 	double b = (z * other.X()) - (x * other.Z());
@@ -122,17 +117,42 @@ Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 }
 
 string Vertex::toString() const{
-	string xyz = dtos(x) + " " + dtos(y) + " " + dtos(z) + "\n";
+	string xyz = dtos(x) + " " + dtos(y) + " " + dtos(z);
 	return xyz;
 }
 
 Ray::Ray(){
-	center = Point(0, 0, 0);
+	origin = Point(0, 0, 0);
 	direction = Normal(1, 0, 0);
+	limit = 20;
 }
 
-Ray::Ray(const Point &center, const Vector &direction){
+Ray::Ray(const Point &center, const Vector &direction, int limit){
 	this->origin = center;
 	this->direction = direction;
+	this->limit = limit;
 }
+
+bool Ray::reachedLimit() const {
+	if(limit <= 0)
+		return true;
+	else
+		return false;
+}
+
+Ray Ray::reflect(const double &distance, const Normal &N) const{
+	Vector V = direction * -1;
+	Vector twoNV = N * abs(2 * V.dot(N));
+	Vector reflectionDirection = twoNV - V;
+	Vector newDirectionLength = direction * distance;
+	Vector vOrigin = Vector(origin);
+	Vector toNewOrigin = newDirectionLength + vOrigin;
+	Point newOrigin = Point(toNewOrigin.X(), toNewOrigin.Y(), toNewOrigin.Z());
+	return Ray(newOrigin, reflectionDirection, limit - 1);
+}
+
+Ray Ray::refract(const double &distance, const Normal &N) const {
+klj;lkj;lkjl;kj;lkjl;kj;lkjlkj;l;jlkl;lkjlkjkjkj
+}
+
 

@@ -49,6 +49,22 @@ string Model::toString(){
 	return collectVertices;
 }
 
+void Model::collide(const Ray &incoming, int &closestIndex, Polygon &closest, double distance){
+	double smallestDist = std::numeric_limits<double>::max();
+	double examine;
+	int index = 0;
+	std::for_each(faces.begin(), faces.end(), [&](Polygon &face){
+		examine = face.collide(incoming);
+		if(examine < smallestDist){
+			smallestDist = examine;
+			closestIndex = index;
+		}
+		index++;
+	});
+	closest = faces.at(index);
+	distance = smallestDist;
+}
+
 void Model::update(tMatrix trans){
 	std::for_each(faces.begin(), faces.end(), [&](Polygon &face){
 		face.update(trans);
@@ -59,6 +75,16 @@ Light::Light(double red, double green, double blue, double x, double y, double z
 	rgb = RGB(red, green, blue);
 	position = Point(x, y, z);
 	this->notAmbient = notAmbient;
+}
+
+RGB Light::operator*(const double &scalar){
+	return rgb * scalar;
+}
+
+Material::Material(){
+	mindex = begin = end = lambdaOne = lambdaTwo = lambdaThree =
+	k = alpha = translucence = -1;
+	null = true;
 }
 
 Material::Material(int mindex, int begin, int end, double lambdaOne, double lambdaTwo, double lambaThree, double reflectance, double shininess, double tranlucence){
@@ -73,9 +99,24 @@ Material::Material(int mindex, int begin, int end, double lambdaOne, double lamb
 	this->translucence = translucence;
 }
 
-Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position){
+Material::Material(const Material &other){
+	mindex = other.model();
+	begin = other.beginning();
+	end = other.ending();
+	lambdaOne = other.lone();
+	lambdaTwo = other.ltwo();
+	lambdaThree = other.lthree();
+	k = other.rConst();
+	alpha = other.shininess();
+	translucence = other.translucency();
+}
+
+Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position)
+	: Object(){
 	this->model = model;
-	for(unsigned int i = 0; i < mats.size(); i++){
+	int matsSize = mats.size();
+	materials.push_back(Material());
+	for(int i = 0; i < matsSize; i++){
 		Material current = mats.at(i);
 		if(current.model() == position){
 			materials.push_back(current);
@@ -84,13 +125,14 @@ Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int posi
 	}
 }
 
-Polyhedron::Polyhedron(const Polyhedron &source){
+Polyhedron::Polyhedron(const Polyhedron &source)
+	: Object(){
 	model = new Model(*(source.model));
 	materials = source.materials;
 	hasMaterial = source.hasMaterial;
 }
 
-string Polyhedron::toString(){
+string Polyhedron::toString() const{
 	int vertexCount = model->countVertices();
 	int faceCount = model->countFaces();
 	string body = "";
@@ -109,8 +151,30 @@ Polyhedron::~Polyhedron(){
 	delete model;
 }
 
-bool Polyhedron::collide(const Ray &ray){
+int Polyhedron::matchMaterial(int polyIndex) const{
+	int beginning;
+	int ending;
+	int index = 1;
+	std::for_each(materials.begin(), materials.end(), [&](const Material &material){
+		beginning = material.beginning();
+		ending = material.ending();
+		if(beginning <= polyIndex && polyIndex <= ending){
+			return index;
+		}
+	});
+	return 0;
+}
 
+Collision Polyhedron::collide(const Ray &incoming) const{
+	int closestIndex;
+	Polygon closest;
+	double distance = -1;
+	model->collide(incoming, closestIndex, closest, distance);
+	if(distance < 0){
+		return Collision();
+	} else {
+		return Collision(incoming, distance, closest.norm(), materials.at(matchMaterial(closestIndex)));
+	}
 }
 
 void Polyhedron::update(tMatrix trans){
@@ -147,10 +211,10 @@ void Scene::update(tMatrix trans, int objnum){
 
 std::vector<std::vector<string>> Scene::toString(){
 	std::vector<std::vector<string>> allInfo;
-	std::for_each(objects.begin(), objects.end(), [&](Object obj){
+	std::for_each(objects.begin(), objects.end(), [&](const Object &object){
 		std::vector<string> objInfo;
-		string name = obj.getName();
-		string modelBody = obj.toString();
+		string name = object.getName();
+		string modelBody = object.toString();
 		objInfo.push_back(name);
 		objInfo.push_back(modelBody);
 		allInfo.push_back(objInfo);
@@ -158,24 +222,73 @@ std::vector<std::vector<string>> Scene::toString(){
 	return allInfo;
 }
 
+RGB Scene::calcAmbient(const Collision &collision, const Light &light) const{
+	Material mat = collision.collisionMaterial();
+	RGB brightness = light.color();
+	double r = mat.lone() * brightness.red();
+	double g = mat.ltwo() * brightness.green();
+	double b = mat.lthree() * brightness.blue();
+	return RGB(r, g, b);
+}
+
+RGB Scene::calcSpecularDiffuse(const Collision &collision){
+	RGB ret();
+	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
+		Normal L = Vector(light.getPosition()) - Vector(collision.getPosition());
+		Normal surfaceNorm = collision.getNormal();
+		double LN = L.dot(surfaceNorm);
+		if(LN < 0){
+			return;
+		}
+
+		//specular
+		Material material = collision.collisionMaterial();
+		double theta = surfaceNorm * L;
+		Vector R = surfaceNorm * (2 * abs(LN)) - L;
+		Vector V = collision.getV();
+		double upShine = pow(V.dot(R), material.shininess());
+		double rConst = material.rConst();
+		RGB specular = light * rConst;
+
+		//diffuse
+		RGB brightness = light.color();
+		double r = material.lone() * brightness.red();
+		double g = material.ltwo() * brightness.green();
+		double b = material.lthree() * brightness.blue();
+		RGB diffuse = RGB(r, g, b) * LN;
+
+		//TODO: set defaults of mateiral class
+		//TODO: check calculationms
+
+		ret = ret + specular * upShine * diffuse;
+	});
+}
+
 RGB Scene::see(const Ray &ray){
-	std::vector<Collision> all;
-	std::for_each(objects.begin(), objects.end(), [&](Object object){
-		all.push_back(object.collide(ray));
+	if(ray.reachedLimit()){
+		return RGB();
+	}
+	Collision current = Collision();
+	Collision examine;
+	std::for_each(objects.begin(), objects.end(), [&](const Object &object){
+		examine = object.collide(ray);
+		if(current > examine){
+			current = examine;
+		}
 	});
-	Collision closest = closestCollision(all);
-	return color(closest);
-}
-
-Collision closestCollision(const std::vector<Collision> &all){
-	Collision lowest;
-	std::for_each(all.begin(), all.end(), [&](Collision collision){
-
+	Light ambient;
+	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
+		if(!light.hasPosition()){
+			ambient = light;
+			return;
+		}
 	});
-}
+	RGB ambient = calcAmbient(current, ambient);
+	RGB specular = specular();
 
-RGB color(const Collision &closest){
-
+	//RGB reflection = see(current.reflect());
+	//RGB refraction = see(current.refract());
+	return diffuse;
 }
 
 std::vector<RGB> Scene::trace(){

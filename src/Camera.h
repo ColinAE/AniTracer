@@ -14,9 +14,9 @@
 class Camera{
 private:
 	Point focalPoint;
-	Point lookat;
-	Vector vup;
-	double focalLength;
+	Point lookat; //Point the camera is looking at
+	Vector vup; //View Plane Normal
+	double focalLength; //Length from focal point to screen
 	Screen screen;
 
 	double calcMidzoneOffset(const Vector &, const Vector &, const Vector &);
@@ -29,6 +29,9 @@ public:
 	Vector getVUP() const { return vup; }
 	double getFocalLength() const { return focalLength; }
 	Screen getScreen() const { return screen; }
+
+	//Generate vector of rays for each pixel on the screen.
+	//Rays have origins on the pixel/screen plane
 	std::vector<Ray> shootAll();
 };
 

@@ -42,7 +42,7 @@ public:
 	int getOriginalFaceCount() { return faceCount; }
 	string toString();
 	void addFace(Polygon newface){ faces.push_back(newface); }
-	gar collide(const Ray &);
+	void collide(const Ray &incoming, int &closestIndex, Polygon &closest, double distance);
 	void update(tMatrix);
 };
 
@@ -56,6 +56,7 @@ public:
 	RGB color() const { return rgb; }
 	Point getPosition() const { return position; }
 	bool hasPosition() const { return notAmbient; }
+	RGB operator*(const double &);
 };
 
 class Material {
@@ -63,8 +64,11 @@ private:
 	int mindex, begin, end;
 	double lambdaOne, lambdaTwo, lambdaThree;
 	double k, alpha, translucence;
+	bool null = false;
 public:
+	Material();
 	Material(int, int, int, double, double, double, double, double, double);
+	Material(const Material &);
 	int model() const { return mindex; }
 	int beginning() const { return begin; }
 	int ending() const { return end; }
@@ -74,14 +78,16 @@ public:
 	double rConst() const { return k; }
 	double shininess() const { return alpha; }
 	double translucency() const { return translucence; }
+	bool isNull() { return null; }
 };
 
 class Object {
 public:
-	virtual Collision collide();
-	virtual void update(tMatrix);
-	virtual ~Object();
-	virtual string toString();
+	virtual Collision collide(const Ray &) const = 0;
+	virtual void update(tMatrix) = 0;
+	virtual ~Object() = 0;
+	virtual string toString() const = 0;
+	virtual string getName() const = 0;
 };
 
 class Polyhedron : public Object {
@@ -90,13 +96,14 @@ private:
 	std::vector<Material> materials;
 	bool hasMaterial = false;
 
+	int matchMaterial(int) const;
 public:
 	Polyhedron(Model *, const std::vector<Material> &, int);
 	Polyhedron(const Polyhedron &);
-	virtual ~Polyhedron();
-	string getName() { return model->getName(); }
-	string toString();
-	virtual Collision collide(const Ray &);
+	~Polyhedron();
+	string getName() const { return model->getName(); }
+	string toString() const;
+	Collision collide(const Ray &) const;
 	void update(tMatrix);
 
 
@@ -108,9 +115,9 @@ private:
 	std::vector<Light> lights;
 	Camera camera;
 
+	RGB calcAmbient(const Collision &, const Light &) const;
+	RGB calcSpecularDiffuse(const Collision &);
 	RGB see(const Ray &);
-	Collision closestCollision(const std::vector<Collision> &);
-	RGB color(const Collision &);
 public:
 	Scene(const Camera &, const std::vector<Model*> &, const std::vector<Light> &, const std::vector<Material> &);
 	Scene(const Scene &);

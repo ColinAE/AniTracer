@@ -14,10 +14,18 @@
 
 namespace geops{
 
+	// Cut polygon into triangles. All convex polygons can be cut into multiple triangles.
 	std::vector<Polygon> triangularize(const Polygon &);
+
+	// Calculate centroid of polygon that is made up of a vector of vertices.
 	Point centroid(const std::vector<Point> &);
 	Point centroid(const std::vector<Vertex> &);
-	Vector perpendicular(const std::vector<Vertex> &);
+
+	// Compute vector that is perpendicular to a polygon point vector.
+	// Assumes polygon vertices vector contains three points / is a triangle.
+	// TODO: should still work with more than three points. Test this possibility.
+	Normal perpendicular(const std::vector<Vertex> &);
+
 	/*
 	double distanceShell(const Shell &, const Shell &);
 	vector<Point> boundingBox(const vector<Point> &);

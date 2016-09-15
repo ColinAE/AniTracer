@@ -51,12 +51,11 @@ class FlagException: public exception {
 	}
 } flagexc;
 
-
-class ReadException: public exception {
+class OpenException: public exception {
 	virtual const char* what(string readable) const throw () {
-		return "Could not read file: ";
+		return "Could not open file: ";
 	}
-} rexc;
+} oexc;
 
 
 #endif /* MYEXCEPTIONS_H_ */

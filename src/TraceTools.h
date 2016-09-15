@@ -10,9 +10,27 @@
 
 class Collision{
 private:
+	double travelDistance;
+	Ray collidingRay;
+	Normal surfaceNorm;
+	Material mat;
+	Point position;
 public:
-	Collision(double, );
+	Collision();
+	Collision(const Ray &, double, const Normal &, const Material &);
+	bool operator>(const Collision &);
+	double getDistance() const { return travelDistance; }
+	Material collisionMaterial() const { return mat; }
+	Point getPosition() const { return position; }
+	Normal getNormal() const { return surfaceNorm; }
+	Vector getV() const { return collidingRay.getDirection() * -1; }
+	Ray reflect();
+	Ray refract();
 };
+
+namespace rayTracingTools{
+
+double detectTriangleCollision(const Ray &, const std::vector<Vertex> &);
 
 inline double calcM(const Point &c1, const Point &c2, const Point &D){
 	double one = c1.X() * ((c2.Y() * D.Z()) - (D.Y() * c2.Z()));
@@ -43,6 +61,8 @@ inline double calcTau(const Point &c1, const Point &c2, const Point &aug, double
 	double three = c2.X() * ((c1.Y() * aug.Z()) - (aug.Y() * c1.Z()));
 	double sum = one + two + three;
 	return -(sum / M);
+}
+
 }
 
 

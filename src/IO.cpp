@@ -5,26 +5,26 @@
  *      Author: colin
  */
 
+//Contains functions involved with input and output.
+
 #include "IO.h"
 
-void badfile(string type){
+void tracerio::badfile(string type){
 	cout << "Error: " + type + "\nExiting." << endl;
 	exit(EXIT_FAILURE);
 }
 
-
 //TODO: ERROR CHECKING
 //Build Camera object
-Camera readCamera(const string in){
+Camera tracerio::readCamera(const string in){
 
 	//Open File
 	ifstream camfile(in, ifstream::in);
 	if(!camfile.good()){
-		cout << "camera file failed to open" << endl;
-		exit(EXIT_FAILURE);
+		badfile(in);
 	}
 
-	string line;
+	string line; // Storage for read lines.
 
 	//Get camera attributes
 	Point focalPoint = camPoint(camfile);
@@ -46,41 +46,46 @@ Camera readCamera(const string in){
 }
 
 //Read camera points
-Point camPoint(ifstream &camfile){
+Point tracerio::camPoint(ifstream &camfile){
 	string line;
 	getline(camfile, line);
-	std::vector<double> fpoint = camin(line, 3);
-	Point point(fpoint[0], fpoint[1], fpoint[2]);
+	std::vector<double> focalPoint = camin(line, 3);
+	Point point(focalPoint[0], focalPoint[1], focalPoint[2]);
 	return point;
 }
 
-//Read Camera file lines
-std::vector<double> camin(string usein, unsigned int inlength){
+// Parse camera file line.
+// Meant to read lines containing variable quantities of attributes.
+// Namely, it reads the focal length on line 4 and the four screen bounds on line 5
+// of the camera files that this program uses.
+// "usein" parameter contains full line read from the camera file.
+std::vector<double> tracerio::camin(string usein, int bound){
 	string holder = usein.substr(0, usein.length());
-	size_t pos;
-	int bound = inlength;
+	size_t position;
+	std::vector<double> lineAttributes;
 	try{
-		std::vector<double> ret;
+
+		// Read each attribute from the line.
 		for(int i = 0; i < bound; i++){
-			double in = std::stod(holder, &pos);
-			ret.push_back(in);
-			holder = holder.substr(pos, holder.length());
+			double in = std::stod(holder, &position);
+			lineAttributes.push_back(in);
+			holder = holder.substr(position, holder.length());
 		}
-		return ret;
+
 	} catch (exception &e){
-		cout << e.what() << endl;
-		exit(EXIT_FAILURE);
+		badfile(e.what());
 	}
+	return lineAttributes;
 }
 
-//Read Model Materials file.
-void readMaterials(std::vector<Light> &lights, std::vector<Material> &materials, string filename){
+// Read Model Materials file.
+// lights and materials parameters are passed to this function empty.
+void tracerio::readMaterials(std::vector<Light> &lights, std::vector<Material> &materials, string materialFilename){
 
 	//Open file
-	ifstream mats(filename, ifstream::in);
+	ifstream mats(materialFilename, ifstream::in);
 	if(!mats.good()){
-		cout << "Materials file failed to open. Exiting." << endl;
-		exit(EXIT_FAILURE);
+		badfile("Materials file failed to open.");
 	}
 
 	//Read each line
@@ -96,14 +101,11 @@ void readMaterials(std::vector<Light> &lights, std::vector<Material> &materials,
 			double r, g, b, x, y, z;
 
 			// Read color
-
-			r = stod(holder, &pos);
+			r = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-
-			g = stod(holder, &pos);
+			g = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-
-			b = stod(holder, &pos);
+			b = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Special case: Read ambient light.
@@ -114,14 +116,11 @@ void readMaterials(std::vector<Light> &lights, std::vector<Material> &materials,
 			}
 
 			//Read (x, y, z) position
-
-			x = stod(holder, &pos);
+			x = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-
-			y = stod(holder, &pos);
+			y = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-
-			z = stod(holder, &pos);
+			z = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			Light light(r, g, b, x, y, z, true);
@@ -136,62 +135,58 @@ void readMaterials(std::vector<Light> &lights, std::vector<Material> &materials,
 			double k, alpha, translucency;
 
 			//Read model number
-			mindex = stoi(holder, &pos);
+			mindex = std::stoi(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read first polygon that material applies to
-			beginning = stoi(holder, &pos);
+			beginning = std::stoi(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read last polygon that the material applies to
-			end = stoi(holder, &pos);
+			end = std::stoi(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read lambda diagonals
-			lone = stod(holder, &pos);
+			lone = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-			ltwo = stod(holder, &pos);
+			ltwo = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-			lthree = stod(holder, &pos);
+			lthree = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read specular reflectance constant
-			k = stod(holder, &pos);
+			k = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read shininess exponent
-			alpha = stod(holder, &pos);
+			alpha = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 
 			//Read percent translucency
-			translucency = stod(holder, &pos);
+			translucency = std::stod(holder, &pos);
 			holder = holder.substr(pos, holder.length());
-
-			/*
-			cout << "mindex: " << mindex << " beginning: " << beginning
-			<< " end: " << end << "\nlone: " << lone << " ltwo: " << ltwo
-			<< " lthree: " << lthree << "\nk: " << k << " alpha: " << alpha << endl;
-			*/
 
 			Material material(mindex, beginning, end, lone, ltwo, lthree, k, alpha, translucency);
 			materials.push_back(material);
 		}
 		else{
-			badfile("material");
+			badfile(materialFilename);
 		}
 	}
 
 	mats.close();
 }
 
-
-Model* readPLY(string in, int modnum, const std::vector<Material> &materials){
+// Read PLY files one by one and build the model object.
+// modelFilename - Model file string.
+// modnum - Number that has been assigned to this model for bookkeeping purposes.
+// materials - Material vector loaded with all materials.
+Model* tracerio::buildModel(string modelFilename, int modnum, const std::vector<Material> &materials){
 
 	//Read file
-	ifstream ply(in, std::ifstream::in);
+	ifstream ply(modelFilename, std::ifstream::in);
 	if(!ply.good()){
-		cout << "PLY file failed to open. Exiting." << endl;
-		exit(EXIT_FAILURE);
+		badfile("PLY file failed to open.");
 	}
 
 	//Read first header
@@ -210,30 +205,30 @@ Model* readPLY(string in, int modnum, const std::vector<Material> &materials){
 
 	int vertexCount = 0;
 	int faceCount = 0;
-	string vproperties = ""; //properties of vertices
-	string properties; // properties of position data
+	string vproperties = ""; // Properties of vertices.
+	string properties; // Properties of position data.
 
-	// Read Header
+	// Read Header.
 	string holder;
 	int stepper = 1;
 	while(!std::getline(ply, holder).eof()){
 
-		// Terminate loop if the end of the header is found
+		// Terminate loop if the end of the header is found.
 		if(holder.find("end_header") != std::string::npos){
 			break;
 		}
 
-		// Skip over comment lines
+		// Skip over PLY comment lines.
 		if(holder.find("comment") != std::string::npos){
 			continue;
 		}
 
-		// Read vertex count
+		// Read vertex count.
 		else if(holder.find("element vertex ") == std::string::npos && stepper == 1){
 			badfile("Header line 3: Vertex Line");
 		}
 
-		// After vertex count is read, read vertex datatype lines
+		// After vertex count is read, read vertex datatype lines.
 		else if(stepper == 1){
 			int lastSpace = holder.find_last_of(" ") + 1;
 			int vertexSize = lastSpace - holder.length();
@@ -251,7 +246,7 @@ Model* readPLY(string in, int modnum, const std::vector<Material> &materials){
 			continue;
 		}
 
-		// After vertex datatype lines are read, read face count
+		// After vertex datatype lines are read, read face count.
 		else if(stepper == 2){
 			int lastSpace = holder.find_last_of(" ") + 1;
 			int faceSize = lastSpace - holder.length();
@@ -259,7 +254,6 @@ Model* readPLY(string in, int modnum, const std::vector<Material> &materials){
 			if(std::getline(ply, holder).eof()){
 				badfile("Header line 7: face line");
 			} else {
-				//TODO: Process the property list for vertex faces
 				properties = holder;
 			}
 			stepper++;
@@ -267,61 +261,61 @@ Model* readPLY(string in, int modnum, const std::vector<Material> &materials){
 		}
 	}
 
-	//Read vertices
+	//Read each vertex line
 	std::vector<Vertex> vertices;
 	size_t pos;
 	for(int i = 0; i < vertexCount; i++){
 		double x, y, z;
-		//TODO: Will definitely need to debug this
 		std::getline(ply, holder);
 
-		x = stod(holder, &pos);
+		x = std::stod(holder, &pos);
 		holder = holder.substr(pos, holder.length());
-
-		y = stod(holder, &pos);
+		y = std::stod(holder, &pos);
 		holder = holder.substr(pos, holder.length());
-
-		z = stod(holder, &pos);
+		z = std::stod(holder, &pos);
 		holder = holder.substr(pos, holder.length());
 
 		vertices.push_back(Vertex(x, y, z));
 	}
 
-	//Read faces
+	//Read each face line
 	std::vector<Polygon> faces;
 	for(int i = 0; i < faceCount; i++){
 		std::vector<Vertex> faceVertices;
 		std::getline(ply, holder);
-		int count = stoi(holder, &pos);
+		int count = std::stoi(holder, &pos);
 		holder = holder.substr(pos, holder.length());
 
-		//TODO: try/catch for error
+		//Polygons, by definition, must be composed of at least three points.
 		if(count < 3) badfile("Faces");
+
+		//Create a new Polygon object from a given face's associated vertices.
 		int element;
 		for(int j = 0; j < count; j++){
-			element = stoi(holder, &pos);
+			element = std::stoi(holder, &pos);
 			holder = holder.substr(pos, holder.length());
 			faceVertices.push_back(vertices[element]);
 		}
-		//Split faces into triangles. Add to face vector.
 		Polygon newface(faceVertices);
+
+		//Split faces into triangles. Add to face vector.
 		std::vector<Polygon> newfaces = geops::triangularize(newface);
 		faces.insert(faces.end(), newfaces.begin(), newfaces.end());
 	}
 
-	//Recalculate face count
+	//Recalculate face count to account for the new faces produced by the triangularize operation.
 	faceCount = faces.size();
 
-	cout << in << endl;
-
-	Model* model = new Model(in, vertexCount, faceCount, faces, properties, vproperties);
+	Model* model = new Model(modelFilename, vertexCount, faceCount, faces, properties, vproperties);
 
 	ply.close();
 
 	return model;
 }
 
-void writePLY(Scene* set, string out){
+//TODO: catch the error emerging from this function
+// Output ply file of the models in their current positions.
+void tracerio::writePLY(Scene* set, string out){
 	std::vector<std::vector<string>> objectStrings = set->toString();
 	std::for_each(objectStrings.begin(), objectStrings.end(), [&](std::vector<string> objinfo){
 		string name = objinfo.at(0);
@@ -330,15 +324,14 @@ void writePLY(Scene* set, string out){
 		cout << "Outputting \"" + out + "_" + name + "\"." << endl;
 		ofstream output(filename, std::ofstream::out);
 		if(!output.good()){
-			cout << "Output file failed to open. Exiting." << endl;
-			exit(EXIT_FAILURE);
+			throw OpenException(out);
 		}
 		output << body;
 		output.close();
 	});
 }
 
-
+//TODO: ppm output code that I wrote a long time ago. I want to adapt it to this project.
 //Write the .ppm image
 /*
 void writePPM(vector<RGB> image, Camera camera, char *out){

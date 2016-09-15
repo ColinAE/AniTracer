@@ -26,9 +26,21 @@
 #include "Transform.h"
 #include "MyExceptions.h"
 
-//
+
+namespace sf{
+	const bool SUCCESS = true;
+	const bool FAILURE = false;
+};
+
+//Parse all command-line arguments.
+//Performs validity checking for everything except whether the supplied filenames
+//can be opened.
 int parseArgs(int, char**, int &, vector<string> &, string &, string &, string &);
+
+//read all data and construct containing structures
 int buildScene(Scene* &, vector<string>, string, string, string);
+
+
 
 int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles, string &camFile, string &outFile, string &mats){
 
@@ -54,11 +66,11 @@ int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles,
 					return 0;
 				}
 
-				//Camera flag
+			//Camera flag
 			} else if (strcmp(argv[i], "-cam") == 0) {
 				camFile = argv[i + 1];
 
-				//Model flag
+			//Model flag
 			} else if (strcmp(argv[i], "-models") == 0) {
 				int modIndex = i + 2; //Model filenames begin after the flag and count arguments.
 				i += 1; //Model count is after flag.
@@ -106,25 +118,42 @@ int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles,
 	return 1;
 }
 
-int buildScene(Scene* &scene, vector<string> modelFiles, string camFile, string outFile, string matFile){
+
+//"scene" variable get loaded.
+//Return value is error
+bool buildScene(Scene* &scene, vector<string> modelFiles, string camFile, string outFile, string matFile){
 	Camera camera;
 	vector<Model*> models;
 	vector<Light> lights;
 	vector<Material> materials;
 
 	//Read all data
-	camera = readCamera(camFile);
-	readMaterials(lights, materials, matFile);
+	try{
+		camera = tracerio::readCamera(camFile);
+	} catch(...){
+		return sf::FAILURE;
+	}
+	try{
+		materials = tracerio::readMaterials(lights, materials, matFile)
+	} catch(...){
+		return sf::FAILURE;
+	}
 
 	int modelCount = modelFiles.size();
 	for (int i = 0; i < modelCount; i++) {
-		string current = modelFiles.at(i);
-		Model* next = readPLY(current, i, materials);
-		models.push_back(next);
+		try{
+			string current = modelFiles.at(i);
+			Model* next = tracerio::buildModel(current, i, materials);
+			models.push_back(next);
+		} catch(...){
+			std::cerr << "Model " << i << endl;
+			return sf::FAILURE;
+		}
 	}
+	//TODO: Return false if
 
 	scene = new Scene(camera, models, lights, materials);
-	return 1;
+	return sf::SUCCESS;
 }
 
 void freeAll(Scene* set){
@@ -137,19 +166,22 @@ int main(int argc, char *argv[]){
 	int protocol;
 
 	//Parse all command-line arguments.
-	//Performs validity checking for everything except whether the supplied filenames
-	//can be opened.
 	if(!parseArgs(argc, argv, protocol, modelFiles, camFile, outFile, matFile)){
 		cout << "Could not parse arguments" << endl;
 		return -1;
 	}
 
 	Scene* set;
+	//TODO: THIS THING
+	/*
 	if(true == false){
 		buildScene(set, modelFiles, camFile, outFile, matFile);
 		delete set;
 		return -1;
 	}
+	*/
+
+	//Build the scene
 	if(!buildScene(set, modelFiles, camFile, outFile, matFile)){
 		cout << "Could not build scene" << endl;
 		return -1;

@@ -9,7 +9,68 @@
 
 const double epsilon = .000000000001;
 
+Collision::Collision(){
+	travelDistance = -1;
+	collidingRay = Ray();
+	surfaceNorm = Normal();
+	mat = Material();
+	position = Point();
+}
 
+Collision::Collision(const Ray &collided, double distance, const Normal &norm, const Material &material){
+	travelDistance = distance;
+	collidingRay = collided;
+	surfaceNorm = norm;
+	Material mat = material;
+	Point position = (collided.getDirection() * distance + Vector(collided.getOrigin())).destination();
+}
+
+bool Collision::operator>(const Collision &other){
+	if(travelDistance > other.getDistance()){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+Ray Collision::reflect(){
+	return collidingRay.reflect(travelDistance, surfaceNorm);
+}
+
+Ray Collision::refract(){
+	return collidingRay.refract(travelDistance, surfaceNorm);
+}
+
+double rayTracingTools::detectTriangleCollision(const Ray &incoming, const std::vector<Vertex> &vertices){
+	Vector a = vertices.at(0);
+	Vector b = vertices.at(1);
+	Vector c = vertices.at(2);
+
+	Vector c1 = a - b;
+	Vector c2 = a - c;
+	Normal D = incoming.direction();
+	Vector aug = a - incoming.origin();
+
+	double maxlen = std::numeric_limits<double>::max(); //TODO: what does this do?
+
+	double M = rayTracingTools::calcM(c1, c2, D);
+	double tau = rayTracingTools::calcTau(c1, c2, aug, M);
+
+	if(tau + epsilon < 0 || tau - epsilon > maxlen){
+		return maxlen;
+	}
+	double gamma = rayTracingTools::calcGamma(c1, D, aug, M);
+	if(gamma + epsilon < 0 || gamma - epsilon > 1){
+		return maxlen;
+	}
+	double beta = rayTracingTools::calcBeta(c2, D, aug, M);
+	if(beta + epsilon < 0 || beta - epsilon > 1 - gamma)
+		return maxlen;
+	return tau;
+
+}
+
+/* FOR REFERENCE
 //Check if the ray collides with a given triangle
 bool collideTriangle(const Ray &ray, const vector<Model> &models,
 					int index, int mindex, Tracker &tracker){
@@ -53,3 +114,5 @@ bool collideTriangle(const Ray &ray, const vector<Model> &models,
 	//cout << "true" << endl;
 	return true;
 }
+
+*/

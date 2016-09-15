@@ -51,6 +51,7 @@ public:
 	double magnitude() const;
 	Vector cross(const Vector &) const;
 	double dot(const Vector &) const;
+	Point destination() const { return Point(x, y, z); }
 };
 
 class Normal : public Vector{
@@ -81,11 +82,16 @@ class Ray{
 private:
 	Point origin;
 	Normal direction;
+	int limit;
 public:
 	Ray();
-	Ray(const Point &, const Vector &);
-	Normal getDirection(){ return direction; }
-	Vector getOrigin(){ return origin; }
+	Ray(const Point &, const Vector &, int);
+	Normal getDirection() const { return direction; }
+	Point getOrigin() const { return origin; }
+	bool reachedLimit() const;
+	int getLimit() { return limit; }
+	Ray reflect(const double &, const Normal &) const;
+	Ray refract(const double &, const Normal &) const;
 };
 
 #endif
