@@ -22,7 +22,7 @@ Polygon::Polygon(const std::vector<Vertex> &vertices){
 	this->vertices = vertices;
 	vertexCount = vertices.size();
 	center = geops::centroid(vertices);
-	norm = geops::perpendicular(vertices);
+	norm = geops::computeNormal(vertices);
 }
 
 // Format: X Y Z

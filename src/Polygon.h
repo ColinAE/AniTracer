@@ -16,6 +16,10 @@
 
 using std::string;
 
+// Polygon object, which is made up of three or more vertices (hopefully three
+// if it is a polygon within a model).
+// Contains a centroid and a surface normal.
+// Supports ray-TRIANGLE!!!! intersection.
 class Polygon{
 private:
 	std::vector<Vertex> vertices;

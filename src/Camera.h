@@ -11,6 +11,8 @@
 #include "Singular.h"
 #include "Screen.h"
 
+// Camera object
+// Contains everything required of a ray-tracing camera, including the screen.
 class Camera{
 private:
 	Point focalPoint;
@@ -19,11 +21,11 @@ private:
 	double focalLength; //Length from focal point to screen
 	Screen screen;
 
-	double calcMidzoneOffset(const Vector &, const Vector &, const Vector &);
+	double calcMidzoneOffset(const Vector &u, const Vector &v, const Vector &f);
 public:
 	Camera();
-	Camera(Point, Point, Vector, double, Screen);
-	Camera(const Camera &);
+	Camera(Point focalPoint, Point lookat, Vector v, double focalLength, Screen scr);
+	Camera(const Camera &other);
 	Point getFocalPoint() const { return focalPoint; }
 	Point getLookat() const { return lookat; }
 	Vector getVUP() const { return vup; }

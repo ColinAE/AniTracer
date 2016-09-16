@@ -5,6 +5,8 @@
  *      Author: colin
  */
 
+//Contains functions involved with input and output.
+
 #ifndef IO_H
 #define IO_H
 
@@ -37,7 +39,7 @@ Camera readCamera(const string);
 Point camPoint(std::ifstream &);
 
 // Parse camera file line.
-std::vector<double> camin(string, unsigned int);
+std::vector<double> camin(string, int);
 
 // Read materials from the material file
 void readMaterials(std::vector<Light> &, std::vector<Material> &, string);

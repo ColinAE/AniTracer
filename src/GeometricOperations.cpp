@@ -5,15 +5,11 @@
  *      Author: colin
  */
 
-// Miscellaneous operations involved with geometry.
-// Namespace geops contains several functions that involve geometry.
-// I did not take into account the strictest definition of "geometric operation" when
-// naming this namespace. I could therefore be persuaded to change the name.
-
 #include "GeometricOperations.h"
 #include <iostream>
 
-// Calculate centroids of polygon that is a vector of points
+// Computes the geometric center of a collection of points.
+// Does not take a Polygon object for same reasons as the computeNormal function.
 Point geops::centroid(const std::vector<Point> &points){
 	double x, y, z;
 	x = y = z = 0;
@@ -36,11 +32,12 @@ Point geops::centroid(const std::vector<Vertex> &points){
 std::vector<Polygon> geops::triangularize(const Polygon &face){
 	int count = face.getVertexCount();
 	std::vector<Polygon> triangles;
-	// If the face is already a triangle, add it to the data structure
+
+	// If the face is already a triangle, this adds it to the vector.
 	if(count == 3){
 		triangles.push_back(face);
 
-	// If face is a quadrilateral, split into two triangles
+	// If face is a quadrilateral, this splits it into two triangles without computing a centroid.
 	} else if(count == 4){
 		std::vector<Vertex> triangle;
 
@@ -74,18 +71,24 @@ std::vector<Polygon> geops::triangularize(const Polygon &face){
 	return triangles;
 }
 
-Normal geops::perpendicular(const std::vector<Vertex> &unconstrainedPolygon){
+// Since this function is used to compute the surface normal within the Polygon constructor,
+// the parameter is an "unconstrained polygon" instead of a Polygon object. That is, it is a vector of vertices
+// that should define a polygon. Does not perform checking whether or not the vertices actually
+// define a polygon. One could define a function that takes a Polygon object as well, but since
+// the surface normals within the Polygons are pre-computed using this function, that would be
+// redundant.
+Normal geops::computeNormal(const std::vector<Vertex> &unconstrainedPolygon){
 
-	// Grab each point within the polygon;
+	// Grabs each point within the polygon;
 	Point one = unconstrainedPolygon[0];
 	Point two = unconstrainedPolygon[1];
 	Point three = unconstrainedPolygon[2];
 
-	// Form two vectors from the triangle points.
+	// Forms two vectors from the triangle points.
 	Vector left = Vector(one, two);
 	Vector right = Vector(two, three);
 
-	// Compute the vector that is perpendicular to the polygon.
+	// Computes the vector that is perpendicular to the polygon.
 	Vector perpendicularDirection = left.cross(right);
 	double x = perpendicularDirection.X();
 	double y = perpendicularDirection.Y();

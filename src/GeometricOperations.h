@@ -5,6 +5,8 @@
  *      Author: colin
  */
 
+// Miscellaneous operations involved with geometry.
+
 #ifndef GEOMETRICOPERATIONS_H
 #define GEOMETRICOPERATIONS_H
 
@@ -12,19 +14,23 @@
 #include "Singular.h"
 #include <vector>
 
+// Namespace geops contains several functions that involve geometry.
+// I did not take into account the strictest definition of "geometric operation" when
+// naming this namespace. I could therefore be persuaded to change the name.
 namespace geops{
 
-	// Cut polygon into triangles. All convex polygons can be cut into multiple triangles.
-	std::vector<Polygon> triangularize(const Polygon &);
+	// Cuts polygon into triangles. All convex polygons can be cut into multiple triangles.
+	std::vector<Polygon> triangularize(const Polygon &points);
 
-	// Calculate centroid of polygon that is made up of a vector of vertices.
-	Point centroid(const std::vector<Point> &);
-	Point centroid(const std::vector<Vertex> &);
+	// Calculates centroid of polygon that is made up of a vector of vertices.
+	Point centroid(const std::vector<Point> &points);
+	Point centroid(const std::vector<Vertex> &face);
 
-	// Compute vector that is perpendicular to a polygon point vector.
+	// Computes a surface normal.
 	// Assumes polygon vertices vector contains three points / is a triangle.
+	// unconstrainedPolygon - Vector of vertices that should make up a polygon.
 	// TODO: should still work with more than three points. Test this possibility.
-	Normal perpendicular(const std::vector<Vertex> &);
+	Normal computeNormal(const std::vector<Vertex> &unconstrainedPolygon);
 
 	/*
 	double distanceShell(const Shell &, const Shell &);

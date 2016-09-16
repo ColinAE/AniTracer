@@ -5,8 +5,6 @@
  *      Author: colin
  */
 
-//Contains functions involved with input and output.
-
 #include "IO.h"
 
 void tracerio::badfile(string type){

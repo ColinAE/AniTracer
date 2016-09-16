@@ -187,8 +187,6 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	cout << set->objCount() << endl;
-
 	switch(protocol){
 	case 1:
 		ReadEval::REPL(set, outFile);
