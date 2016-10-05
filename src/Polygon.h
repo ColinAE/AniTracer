@@ -8,11 +8,12 @@
 #ifndef POLYGON_H_
 #define POLYGON_H_
 
-#include "Singular.h"
-#include "Transform.h"
 #include <vector>
 #include <string>
 #include <algorithm>
+
+#include "Singular.h"
+#include "Transform.h"
 
 using std::string;
 

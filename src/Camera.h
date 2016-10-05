@@ -32,8 +32,8 @@ public:
 	double getFocalLength() const { return focalLength; }
 	Screen getScreen() const { return screen; }
 
-	//Generate vector of rays for each pixel on the screen.
-	//Rays have origins on the pixel/screen plane
+	// Generate vector of rays for each pixel on the screen.
+	// Rays have origins on the pixel/screen plane
 	std::vector<Ray> shootAll();
 };
 

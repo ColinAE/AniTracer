@@ -53,7 +53,7 @@ std::vector<Ray> Camera::shootAll(){
 	int highu = screen.gethighu();
 	int highv = screen.gethighv();
 
-	// Compute all rays
+	// Computes all rays
 	// Outer loop iterates through screen rows from top to bottom.
 	for(int i = highv; i > lowv; i--){
 		Vector v = vnorm * i;

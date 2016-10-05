@@ -5,20 +5,29 @@
  *      Author: colin
  */
 
+// Functions and classes directly supporting the ray tracing portion of the code.
+
 #ifndef TRACETOOLS_H_
 #define TRACETOOLS_H_
 
+#include "LightMaterial.h"
+#include <limits>
+
+// A class that represents collisions between rays and objects.
+// This class is simplifies the act of raytracing since it gets
+// initialized with everything needed to represent a collision.
 class Collision{
 private:
 	double travelDistance;
 	Ray collidingRay;
-	Normal surfaceNorm;
-	Material mat;
-	Point position;
+	Normal surfaceNorm; // Surface of the normal that the ray hit.
+	Material mat; // Material of the face that was hit.
+	Point position; // Exact 3-D position of the collision on the face.
 public:
 	Collision();
-	Collision(const Ray &, double, const Normal &, const Material &);
-	bool operator>(const Collision &);
+	Collision(const Ray &collided, double distance, const Normal &norm,
+			const Material &material);
+	bool operator>(const Collision &other) const; // See if this object has greater travel distance.
 	double getDistance() const { return travelDistance; }
 	Material collisionMaterial() const { return mat; }
 	Point getPosition() const { return position; }
@@ -30,7 +39,10 @@ public:
 
 namespace rayTracingTools{
 
-double detectTriangleCollision(const Ray &, const std::vector<Vertex> &);
+// Detects collision between a ray and a triangle.
+double detectTriangleCollision(const Ray &incoming, const std::vector<Vertex> &vertex);
+
+// TODO: needs explanation.
 
 inline double calcM(const Point &c1, const Point &c2, const Point &D){
 	double one = c1.X() * ((c2.Y() * D.Z()) - (D.Y() * c2.Z()));

@@ -7,8 +7,8 @@
 
 #include "IO.h"
 
-void tracerio::badfile(string type){
-	cout << "Error: " + type + "\nExiting." << endl;
+void tracerio::badfile(string errType){
+	cout << "Error: " + errType + "\nExiting." << endl;
 	exit(EXIT_FAILURE);
 }
 
@@ -321,34 +321,37 @@ void tracerio::writePLY(Scene* set, string out){
 		string filename = out + "_" + name;
 		cout << "Outputting \"" + out + "_" + name + "\"." << endl;
 		ofstream output(filename, std::ofstream::out);
+
+		// TODO: throw the error. This should be updated when I require user-input for output
+		// filename.
+		/*
 		if(!output.good()){
 			throw OpenException(out);
 		}
+		*/
 		output << body;
 		output.close();
 	});
 }
 
-//TODO: ppm output code that I wrote a long time ago. I want to adapt it to this project.
-//Write the .ppm image
-/*
-void writePPM(vector<RGB> image, Camera camera, char *out){
+// Writes the .ppm image
+void writePPM(std::vector<RGB> image, Camera camera, char *out){
 	Screen screen = camera.getScreen();
-	int rows = screen.maxu() - screen.minu() + 1;
-	int columns = screen.maxv() - screen.minv() + 1;
+	int rows = screen.getlowu() - screen.gethighu() + 1;
+	int columns = screen.gethighv() - screen.getlowv() + 1;
 
 	ofstream output(out);
 
 	cout << "Writing PPM" << endl;
 	output << "P3" << endl;
-	output << rows << " " << columns << " 255" << endl;
+	output << rows << " " << columns << endl;
 	int inc = 0;
-	for(int i = 0; i < columns; i++){
-		for(int j = 0; j < rows; j++){
+	for(int i = 0; i < rows; i++){
+		for(int j = 0; j < columns; j++){
 			RGB cur = image[inc];
 			//cout << cur.red() << endl;
 			output << cur.red() << " " << cur.green() << " " << cur.blue();
-			if(j != rows - 1){
+			if(j != columns - 1){
 				output << "   ";
 			}
 			inc++;
@@ -357,4 +360,3 @@ void writePPM(vector<RGB> image, Camera camera, char *out){
 	}
 	output.close();
 }
-*/

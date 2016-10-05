@@ -25,12 +25,10 @@ Collision::Collision(const Ray &collided, double distance, const Normal &norm, c
 	Point position = (collided.getDirection() * distance + Vector(collided.getOrigin())).destination();
 }
 
-bool Collision::operator>(const Collision &other){
-	if(travelDistance > other.getDistance()){
-		return true;
-	} else {
-		return false;
-	}
+// Returns true if this object has a larger travel distance than the other object.
+// False otherwise.
+bool Collision::operator>(const Collision &other) const {
+	return travelDistance > other.getDistance();
 }
 
 Ray Collision::reflect(){
@@ -41,15 +39,17 @@ Ray Collision::refract(){
 	return collidingRay.refract(travelDistance, surfaceNorm);
 }
 
-double rayTracingTools::detectTriangleCollision(const Ray &incoming, const std::vector<Vertex> &vertices){
+// TODO: needs explanation.
+double rayTracingTools::detectTriangleCollision(const Ray &incoming,
+		const std::vector<Vertex> &vertices){
 	Vector a = vertices.at(0);
 	Vector b = vertices.at(1);
 	Vector c = vertices.at(2);
 
 	Vector c1 = a - b;
 	Vector c2 = a - c;
-	Normal D = incoming.direction();
-	Vector aug = a - incoming.origin();
+	Normal D = incoming.getDirection();
+	Vector aug = a - incoming.getOrigin();
 
 	double maxlen = std::numeric_limits<double>::max(); //TODO: what does this do?
 

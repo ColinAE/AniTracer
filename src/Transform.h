@@ -15,16 +15,23 @@
 
 class Matrix;
 
+// Linear operations, like multiplication between matrices and vectors, as well as transposition.
 namespace lops{
-	std::vector<double> vmultiply(const Matrix &, const std::vector<double> &);
 
-	template<class matrixType>
-	matrixType multiply(const Matrix &, const Matrix &);
+	// Matrix-vector multiplication.
+	std::vector<double> vmultiply(const Matrix &matrix, const std::vector<double> &vec);
 
+	// Matrix-matrix multiplication.
 	template<class matrixType>
-	matrixType transpose(const Matrix &);
+	matrixType multiply(const Matrix &left, const Matrix &right);
+
+	// Matrix transpose.
+	template<class matrixType>
+	matrixType transpose(const Matrix &matrix);
 }
 
+// Matrix base class that is only intended to be instantiated as 4 by 4.
+// tMatrix and Matrix are separate since this class could be used beyond 4 by 4.
 class Matrix{
 protected:
 	std::vector< std::vector<double> > elements;
@@ -44,6 +51,9 @@ public:
 	int rowCount() const { return rows; }
 	int colCount() const { return columns; }
 };
+
+// Transformation matrix classes.
+// Operations between tMatrix and its child classes produce a basic tMatrix type.
 
 class tMatrix : public Matrix{
 public:
@@ -86,11 +96,15 @@ public:
 	Identity();
 };
 
+// Axisangle never takes in the rotation value.
+// It creates only the matrix, not the entire axis-angle rotation composition.
+// Transformer uses Axisangle to create whole composition.
 class Axisangle : public tMatrix{
 public:
 	Axisangle(double, double, double);
 };
 
+// Composites transformation matrices together.
 class Transformer {
 private:
 	tMatrix tcomposition;

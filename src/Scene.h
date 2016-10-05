@@ -5,9 +5,17 @@
  *      Author: colin
  */
 
+// Contains the guts of the raytracer.
+//
 
 #ifndef OBJECTS_H
 #define OBJECTS_H
+
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
 
 #include "Polygon.h"
 #include "RGB.h"
@@ -15,11 +23,8 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "Utility.h"
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
+#include "TraceTools.h"
+#include "LightMaterial.h"
 
 using std::string;
 using std::ofstream;
@@ -29,56 +34,23 @@ private:
 	int vertexCount, faceCount;
 	std::vector<Polygon> faces;
 	string name;
-	string properties;
-	string vproperties;
+	string properties; // Properties of the numerical values of each line.
+	string vproperties; //Vertex properties.
+
 public:
-	Model(string, int, int, const std::vector<Polygon> &, string, string);
+	Model(string in, int vertexCount, int faceCount, const std::vector<Polygon> &faces,
+			string properties, string vproperties);
 	string getName() { return name; }
 	string getProperties() { return properties; }
 	string getVProperties() { return vproperties; }
 	int countVertices();
 	int countFaces();
-	int getOriginalVertexCount() { return vertexCount; }
+	int getOriginalVertexCount() { return vertexCount; } //TODO: Defunct, I think.
 	int getOriginalFaceCount() { return faceCount; }
 	string toString();
 	void addFace(Polygon newface){ faces.push_back(newface); }
 	void collide(const Ray &incoming, int &closestIndex, Polygon &closest, double distance);
-	void update(tMatrix);
-};
-
-class Light {
-private:
-	RGB rgb = RGB(-1, -1, -1);
-	Point position;
-	bool notAmbient;
-public:
-	Light(double, double, double, double, double, double, bool);
-	RGB color() const { return rgb; }
-	Point getPosition() const { return position; }
-	bool hasPosition() const { return notAmbient; }
-	RGB operator*(const double &);
-};
-
-class Material {
-private:
-	int mindex, begin, end;
-	double lambdaOne, lambdaTwo, lambdaThree;
-	double k, alpha, translucence;
-	bool null = false;
-public:
-	Material();
-	Material(int, int, int, double, double, double, double, double, double);
-	Material(const Material &);
-	int model() const { return mindex; }
-	int beginning() const { return begin; }
-	int ending() const { return end; }
-	double lone() const { return lambdaOne; }
-	double ltwo() const { return lambdaTwo; }
-	double lthree() const {return lambdaThree; }
-	double rConst() const { return k; }
-	double shininess() const { return alpha; }
-	double translucency() const { return translucence; }
-	bool isNull() { return null; }
+	void update(tMatrix trans);
 };
 
 class Object {
@@ -111,13 +83,13 @@ public:
 
 class Scene {
 private:
-	std::vector<Object> objects;
+	std::vector<Object *> objects;
 	std::vector<Light> lights;
 	Camera camera;
 
-	RGB calcAmbient(const Collision &, const Light &) const;
-	RGB calcSpecularDiffuse(const Collision &);
-	RGB see(const Ray &);
+	RGB calcAmbient(const Collision &collision, const Light &light) const;
+	RGB calcSpecularDiffuse(const Collision &collision);
+	RGB see(const Ray &ray);
 public:
 	Scene(const Camera &, const std::vector<Model*> &, const std::vector<Light> &, const std::vector<Material> &);
 	Scene(const Scene &);

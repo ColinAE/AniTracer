@@ -32,6 +32,10 @@ bool Point::operator==(const Point &other) const{
 
 
 // Vector definitions
+
+// TODO: I have little idea of what I was planning on doing with this constructor.
+// I assume it was meant to be used during the ray tracing portion of the code, but it
+// appears defunct.
 Vector::Vector(const Point &origin, const Point &direction) : Point(){
 	x = direction.X() - origin.X();
 	y = direction.Y() - origin.Y();
@@ -104,6 +108,7 @@ Normal::Normal(const Vector &other) : Vector(){
 	z = normal.Z();
 }
 
+// This function computes
 Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 	Vector one = unconstrainedPolygon.at(0);
 	Vector two= unconstrainedPolygon.at(1);
@@ -116,6 +121,8 @@ Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 	z = direction.Z();
 }
 
+// Format:
+// x y z
 string Vertex::toString() const{
 	string xyz = dtos(x) + " " + dtos(y) + " " + dtos(z);
 	return xyz;
@@ -133,13 +140,11 @@ Ray::Ray(const Point &center, const Vector &direction, int limit){
 	this->limit = limit;
 }
 
-bool Ray::reachedLimit() const {
-	if(limit <= 0)
-		return true;
-	else
-		return false;
-}
-
+// TODO: Reflect and refract methods need more explanation.
+// The reflect and refract methods return rays with new origins and directions, along
+// with this ray's limit minus one.
+// Checking whether or not a ray should continue to be reflected or refracted after
+// it has reached its limit is done elsewhere.
 Ray Ray::reflect(const double &distance, const Normal &N) const{
 	Vector V = direction * -1;
 	Vector twoNV = N * abs(2 * V.dot(N));
@@ -152,7 +157,7 @@ Ray Ray::reflect(const double &distance, const Normal &N) const{
 }
 
 Ray Ray::refract(const double &distance, const Normal &N) const {
-klj;lkj;lkjl;kj;lkjl;kj;lkjlkj;l;jlkl;lkjlkjkjkj
+	//TODO
 }
 
 

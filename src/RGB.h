@@ -8,27 +8,30 @@
 #ifndef RGB_H_
 #define RGB_H_
 
-//Unscaled RGB color object used for the intermediate stages of color calculation
+// Unscaled RGB color object used for the intermediate stages of color calculation.
 class RGB{
 protected:
 	double r, g, b;
 public:
 	RGB();
-	RGB(double, double, double);
+	RGB(double red, double green, double blue);
 	double red() const { return r; }
 	double green() const { return g; }
 	double blue() const { return b; }
-	RGB operator+(const RGB &);
-	RGB operator*(const double &);
+	RGB operator+(const RGB &other) const;
+	RGB operator*(const double &scalar) const;
 };
 
-//Red-Green-Blue color object defined by three integers 0-255 range
-//TODO: r g b variables need error checking so that they stay in-range
+// Scaled RGB color object.
+// TODO: r g b variables need error checking so that they stay in-range
 class sRGB : public RGB{
 private:
-	bool inrange(int);
+
+	// Helper that checks if a value is between 0-255.
+	bool inrange(int rgb);
+
 public:
-	sRGB(int, int, int);
+	sRGB(int red, int green, int blue);
 };
 
 #endif

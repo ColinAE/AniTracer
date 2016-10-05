@@ -35,14 +35,16 @@ namespace sf{
 //Parse all command-line arguments.
 //Performs validity checking for everything except whether the supplied filenames
 //can be opened.
-int parseArgs(int, char**, int &, vector<string> &, string &, string &, string &);
+int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles,
+		string &camFile, string &outFile, string &mats);
 
 //read all data and construct containing structures
-int buildScene(Scene* &, vector<string>, string, string, string);
+bool buildScene(Scene* &set, vector<string> modelFiles, string camFile, string outFile,
+		string matFile);
 
 
-
-int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles, string &camFile, string &outFile, string &mats){
+int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles,
+		string &camFile, string &outFile, string &mats){
 
 	try {
 		for (int i = 1; i < argc; i += 2) {
@@ -121,7 +123,8 @@ int parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles,
 
 //"scene" variable get loaded.
 //Return value is error
-bool buildScene(Scene* &scene, vector<string> modelFiles, string camFile, string outFile, string matFile){
+bool buildScene(Scene* &set, vector<string> modelFiles, string camFile, string outFile,
+		string matFile){
 	Camera camera;
 	vector<Model*> models;
 	vector<Light> lights;
@@ -134,7 +137,7 @@ bool buildScene(Scene* &scene, vector<string> modelFiles, string camFile, string
 		return sf::FAILURE;
 	}
 	try{
-		materials = tracerio::readMaterials(lights, materials, matFile)
+		materials = tracerio::readMaterials(lights, materials, matFile);
 	} catch(...){
 		return sf::FAILURE;
 	}
@@ -152,7 +155,7 @@ bool buildScene(Scene* &scene, vector<string> modelFiles, string camFile, string
 	}
 	//TODO: Return false if
 
-	scene = new Scene(camera, models, lights, materials);
+	set = new Scene(camera, models, lights, materials);
 	return sf::SUCCESS;
 }
 
@@ -172,7 +175,7 @@ int main(int argc, char *argv[]){
 	}
 
 	Scene* set;
-	//TODO: THIS THING
+	//TODO: Get rid of this thing.
 	/*
 	if(true == false){
 		buildScene(set, modelFiles, camFile, outFile, matFile);
@@ -192,7 +195,7 @@ int main(int argc, char *argv[]){
 		ReadEval::REPL(set, outFile);
 		break;
 	case 2:
-
+		//vector<sRGB> colors = scale(set->trace());
 		break;
 	default:
 		break;

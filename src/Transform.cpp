@@ -12,6 +12,8 @@
 #include <iostream>
 
 namespace lops{
+
+
 std::vector<double> vmultiply(const Matrix &matrix, const std::vector<double> &vec){
 	int rows = matrix.rowCount();
 	int columns = matrix.colCount();
@@ -224,6 +226,7 @@ Identity::Identity()
 
 Axisangle::Axisangle(double x, double y, double z)
 	: tMatrix(){
+
 	//The axis of rotation.
 	Vector axis(x, y, z);
 

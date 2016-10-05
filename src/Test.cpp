@@ -39,6 +39,8 @@ TEST(PointTest, PointBasic){
 	EXPECT_TRUE(tpoint == cpoint);
 }
 
+/*
+
 //Test Vector constructors.
 TEST(VectorTest, Constructors){
 	Vector def = Vector();
@@ -149,6 +151,8 @@ TEST(NormalTest, Constructors){
  * TODO: Vertex constructors are defined in terms of Point constructors. I will return to complete this test case later.
  */
 
+
+/*
 //
 
 //Test Screen functionality.
@@ -399,6 +403,7 @@ TEST_F(TransformTest, ScaleByTranslate){
 
 	EXPECT_TRUE(composed == transformer.transformationMatrix());
 }
+*/
 
 int main(int argc, char* argv[]){
 	testing::InitGoogleTest(&argc, argv);

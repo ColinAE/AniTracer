@@ -21,18 +21,19 @@ RGB::RGB(double red, double green, double blue){
 	b = blue;
 }
 
-RGB RGB::operator+(const RGB &other){
+RGB RGB::operator+(const RGB &other) const{
 	double red = r + other.red();
 	double green = g + other.green();
 	double blue = b + other.blue();
 	return RGB(red, green, blue);
 }
 
-RGB RGB::operator*(const double &scalar){
+RGB RGB::operator*(const double &scalar) const{
 	return RGB(scalar * r, scalar * g, scalar * b);
 }
 
 //sRGB definitions
+
 sRGB::sRGB(int red, int green, int blue) :
 	RGB(-1, -1, -1){
 	if(!inrange(red) || !inrange(green) || !inrange(blue)){
