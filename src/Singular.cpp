@@ -90,7 +90,7 @@ double Vector::dot(const Vector &other) const{
 
 // Normal definitions
 Vector Normal::normalize(double x, double y, double z){
-	double mag = magnitude();
+	double mag = Vector(x, y, z).magnitude();
 	return Vector(x/mag, y/mag, z/mag);
 }
 
@@ -111,7 +111,7 @@ Normal::Normal(const Vector &other) : Vector(){
 // This function computes
 Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 	Vector one = unconstrainedPolygon.at(0);
-	Vector two= unconstrainedPolygon.at(1);
+	Vector two = unconstrainedPolygon.at(1);
 	Vector three = unconstrainedPolygon.at(2);
 	Vector left = two - one;
 	Vector right = three - one;

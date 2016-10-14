@@ -26,7 +26,18 @@ Point geops::centroid(const std::vector<Point> &points){
 }
 
 Point geops::centroid(const std::vector<Vertex> &points){
-	return centroid(points);
+	double x, y, z;
+	x = y = z = 0;
+	int len = points.size();
+	for(int i = 0; i < len; i++){
+		Point point = points[i];
+		x += point.X();
+		y += point.Y();
+		z += point.Z();
+	}
+	x /= len; y /= len;	z /= len;
+
+	return Point(x, y, z);
 }
 
 std::vector<Polygon> geops::triangularize(const Polygon &face){

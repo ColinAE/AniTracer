@@ -78,7 +78,6 @@ public:
 	Collision collide(const Ray &) const;
 	void update(tMatrix);
 
-
 };
 
 class Scene {

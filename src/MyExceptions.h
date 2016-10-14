@@ -47,7 +47,7 @@ class ModelBoundsException: public exception {
 
 class FlagException: public exception {
 	virtual const char* what() const throw () {
-		return "Flag unrecognized.";
+		return "Flag unrecognized";
 	}
 } flagexc;
 

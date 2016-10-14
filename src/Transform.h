@@ -50,6 +50,7 @@ public:
 	std::vector< std::vector<double> > getElms(){ return elements; }
 	int rowCount() const { return rows; }
 	int colCount() const { return columns; }
+	string toString() const;
 };
 
 // Transformation matrix classes.
@@ -97,11 +98,11 @@ public:
 };
 
 // Axisangle never takes in the rotation value.
-// It creates only the matrix, not the entire axis-angle rotation composition.
+// It creates only the basis matrix, not the entire axis-angle rotation composition.
 // Transformer uses Axisangle to create whole composition.
 class Axisangle : public tMatrix{
 public:
-	Axisangle(double, double, double);
+	Axisangle(double x, double y, double z);
 };
 
 // Composites transformation matrices together.
@@ -110,11 +111,12 @@ private:
 	tMatrix tcomposition;
 public:
 	Transformer() { tcomposition = Identity(); }
-	void scale(double, double, double);
-	void translate(double, double, double);
-	void axis_angle(double, double, double, double);
-	void update(const tMatrix &);
+	void scale(double x, double y, double z);
+	void translate(double x, double y, double z);
+	void axis_angle(double x, double y, double z, double theta);
+	void update(const tMatrix &next);
 	tMatrix transformationMatrix() { return tcomposition; }
+	string toString() const;
 };
 
 #endif

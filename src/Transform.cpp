@@ -17,7 +17,7 @@ namespace lops{
 std::vector<double> vmultiply(const Matrix &matrix, const std::vector<double> &vec){
 	int rows = matrix.rowCount();
 	int columns = matrix.colCount();
-	std::vector<double> newVec(rows);
+	std::vector<double> newVec;
 	for(int i = 0; i < rows; i++){
 		double accumulator = 0;
 		for(int j = 0; j < columns; j++){
@@ -25,12 +25,13 @@ std::vector<double> vmultiply(const Matrix &matrix, const std::vector<double> &v
 		}
 		newVec.push_back(accumulator);
 	}
-
 	return newVec;
 }
 
 template <class matrixType>
 matrixType multiply(const Matrix &left, const Matrix &right){
+	//std::cout << left.toString() << std::endl;
+	//std::cout << right.toString() << std::endl;
 	Matrix matrans = right.transpose();
 	int rowCount = right.rowCount();
 	std::vector<std::vector<double>> finalVecs(rowCount);
@@ -38,7 +39,10 @@ matrixType multiply(const Matrix &left, const Matrix &right){
 		finalVecs[i] = lops::vmultiply(left, matrans.row(i));
 	}
 
-	return matrixType(Matrix(finalVecs));
+	Matrix final = Matrix(finalVecs).transpose();
+	//std::cout << final.toString() << std::endl;
+
+	return matrixType(Matrix(finalVecs).transpose());
 }
 
 template <class matrixType>
@@ -138,6 +142,17 @@ Vector Matrix::vmultiply(const Vector &vec) const{
 	return ret;
 }
 
+string Matrix::toString() const{
+	string all;
+	for(int i = 0; i < rows; i++){
+		for(int j = 0; j < columns; j++){
+			all += dtos(elements[i][j]) + " ";
+		}
+		all += "\n";
+	}
+	return all;
+}
+
 // Transformation types
 //TODO Check the dimensions of the matrices that are passed the non-default constructor
 tMatrix::tMatrix() :
@@ -199,9 +214,9 @@ Translate::Translate(double x, double y, double z)
 	elements[2][2] = 1;
 	elements[3][3] = 1;
 
-	elements[0][3] = x;
-	elements[1][3] = y;
-	elements[2][3] = z;
+	elements[3][0] = x;
+	elements[3][1] = y;
+	elements[3][2] = z;
 }
 
 Scale::Scale(double x, double y, double z)
@@ -211,8 +226,6 @@ Scale::Scale(double x, double y, double z)
 	elements[1][1] = y;
 	elements[2][2] = z;
 	elements[3][3] = 1;
-	std::cout << elements.size() << std::endl;
-	std::cout << elements.at(3).size() << std::endl;
 }
 
 Identity::Identity()
@@ -226,6 +239,7 @@ Identity::Identity()
 
 Axisangle::Axisangle(double x, double y, double z)
 	: tMatrix(){
+	std::cout << "axis " << std::endl;
 
 	//The axis of rotation.
 	Vector axis(x, y, z);
@@ -235,21 +249,24 @@ Axisangle::Axisangle(double x, double y, double z)
 	x = w.X();
 	y = w.Y();
 	z = w.Z();
+	std::cout << x << " " << y << " " << z << std::endl;
 
 	//Acquire 'u' row using the lowest-equals-one-renormalize-then-cross-with-w heuristic.
-	Vector u;
+	Normal u;
 	if(x < y && x < z){
-		u = w.cross(Normal(Vector(1, y, z)));
+		u = w.cross(Normal(1, y, z));
 	}
 	else if(y < x && y < z){
-		u = w.cross(Normal(Vector(x, 1, z)));
+		u = w.cross(Normal(x, 1, z));
 	}
 	else{
-		u = w.cross(Normal(Vector(x, y, 1)));
+		u = w.cross(Normal(x, y, 1));
 	}
+	std::cout << u.X() << " " << u.Y() << " " << u.Z() << " " << std::endl;
 
 	//Acquire 'v' row by crossing 'w' with 'u'. Could also swap 'w' and 'u' in the cross product.
-	Vector v = w.cross(u);
+	Normal v = w.cross(u);
+	std::cout << v.X() << " " << v.Y() << " " << v.Z() << " " << std::endl;
 
 	std::vector<double> one {u.X(), u.Y(), u.Z(), 0};
 	std::vector<double> two {v.X(), v.Y(), v.Z(), 0};
@@ -271,9 +288,12 @@ void Transformer::translate(double x, double y, double z){
 
 void Transformer::axis_angle(double x, double y, double z, double theta){
 	//Final axis angle matrix, z rotation matrix. Transpose the bases matrix to acquire inverse.
-	Axisangle basesMatrix = Axisangle(x, y, z);
+	Axisangle basesMatrix(x, y, z);
+	std::cout << basesMatrix.toString() << std::endl;
 	Zrotation rotationMatrix(theta);
+	std::cout << rotationMatrix.toString() << std::endl;
 	tMatrix invBases = basesMatrix.transpose();
+	std::cout << invBases.toString() << std::endl;
 
 	//Update the transformation matrix with the required axis angle matrices.
 	tMatrix composed = invBases.multiply(rotationMatrix.multiply(basesMatrix));
@@ -282,6 +302,10 @@ void Transformer::axis_angle(double x, double y, double z, double theta){
 
 void Transformer::update(const tMatrix &next){
 	tcomposition = next.multiply(tcomposition);
+}
+
+string Transformer::toString() const{
+	return tcomposition.toString();
 }
 
 

@@ -24,9 +24,8 @@ void ReadEval::REPL(Scene* set, string outFile){
 
 			// Transform an entire model. User specifies which model
 			case 'T':
-				cout << "Objects 0 - " << set->objCount() - 1 << " available. Select object: ";
+				cout << "Objects 0 through " << set->objCount() - 1 << " available. Select object: ";
 				cin >> selection;
-				cout << endl;
 				ReadEval::transform(set, selection, outFile);
 				break;
 
@@ -62,26 +61,23 @@ bool ReadEval::validCommand(string commands, char command){
 void ReadEval::transform(Scene* set, int objnum, string &outFile){
 	Transformer transformer = Transformer();
 	string usein;
+	getline(cin, usein); // Consume any newlines that may still be lingering.
 	tMatrix trans;
-	cout << endl;
 	bool end = false;
 
 	// Transform object.
 	while(true){
-		usein = ""; // Empty user input holder with each iteration of the loop.
 
 		// Grab the transformation command and the x, y, z scalars for the transformation.
 		double x, y, z, theta;
 		cout << "Transforming object " << objnum << "." << endl;
 		cout << "Input transformation:" << endl;
 		getline(cin, usein);
-		cout << usein << endl; //TODO this line and the line one two lines below it are experiments
 		char firstin = usein[0];
-		cout << firstin << endl;
 
 		// Check for validity of the command. Does not check for validity of the scalars
 		// associated with each transformation. That comes during the "switch" statement.
-		if(!validCommand("FHSTRQKW", firstin)){
+		if(!validCommand("CUFHSTRQKW", firstin)){
 			invalid(usein);
 			continue;
 		}
@@ -96,20 +92,24 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 			// function.
 			case 'S':
 				theta = -1000;
+				//Loads usein with dummies for y and z so parseInputString won't fail.
 				usein += " " + itos(x) + " " + itos(x);
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
-					transformer.scale(x, y, z);
+					cout << "Scale by " << dtos(x) << endl;
+					transformer.scale(x, x, x);
 				}
 				break;
 
 			// Skew the model.
 			case 'K':
 				theta = -1000;
-				if(usein.size() > 3 || parseInputString(usein, x, y, z, theta) == -1){
+				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
+					cout << "Skew by (" << dtos(x) << ", " << dtos(y) << ", " << dtos(z)
+							<< ")" << endl;
 					transformer.scale(x, y, z);
 				}
 				break;
@@ -120,6 +120,8 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
+					cout << "Translate by (" << dtos(x) << ", " << dtos(y) <<
+							", " << dtos(z) << ")" << endl;
 					transformer.translate(x, y, z);
 				}
 				break;
@@ -130,21 +132,32 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
+					cout << "Rotate by (" << dtos(x) << ", " << dtos(y) << ", " << dtos(z) <<
+							")  " << dtos(theta) << endl;
 					transformer.axis_angle(x, y, z, theta);
 				}
 				break;
 
 			// Finish transformation.
 			// This case triggers the update of the entire model.
-			case 'F':
+			case 'U':
+				cout << "Updating object." << endl;
 				trans = transformer.transformationMatrix();
 				set->update(trans, objnum);
+				cout << "Object updated." << endl;
+				break;
+
+			case 'F':
 				end = true; // Tell the loop to end.
 				break;
 
 			// Write the model back out to a PLY file.
 			case 'W':
 				tracerio::writePLY(set, outFile);
+				break;
+
+			case 'C':
+				cout << transformer.toString();
 				break;
 
 			// Output transform help message.
@@ -158,6 +171,7 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				invalid(usein);
 		}
 		if(end) return; // Break out of loop.
+		usein = ""; // Empty user input holder with each iteration of the loop.
 	}
 }
 
@@ -175,9 +189,11 @@ void ReadEval::helpTransform(){
 	"T tx ty tz -- Translate. tx, ty, and tz together are a translation vector.\n" <<
 	"R rx ry rz theta -- Rotate. rx, ry, and rz together are the axis to be rotated around." <<
 	"Theta is the angle of rotation in degrees.\n" <<
+	"U -- Update object.\n" <<
 	"F -- Finish transformation.\n" <<
-	"H -- Print this help message.\n" <<
-	"W -- Write object to .ply file.\n" << endl;
+	"W -- Write object to .ply file.\n" <<
+	"C -- Print out current transformation matrix" <<
+	"H -- Print this help message.\n" << endl;
 }
 
 void ReadEval::invalid(const string &errtype){

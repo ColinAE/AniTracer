@@ -72,8 +72,9 @@ void Model::update(tMatrix trans){
 	});
 }
 
-Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position)
-	: Object(){
+Object::~Object(){}
+
+Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position){
 	this->model = model;
 	int matsSize = mats.size();
 	materials.push_back(Material());
@@ -86,8 +87,7 @@ Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int posi
 	}
 }
 
-Polyhedron::Polyhedron(const Polyhedron &source)
-	: Object(){
+Polyhedron::Polyhedron(const Polyhedron &source){
 	model = new Model(*(source.model));
 	materials = source.materials;
 	hasMaterial = source.hasMaterial;
