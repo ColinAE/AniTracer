@@ -253,10 +253,12 @@ Axisangle::Axisangle(double x, double y, double z)
 
 	//Acquire 'u' row using the lowest-equals-one-renormalize-then-cross-with-w heuristic.
 	Normal u;
-	if(x < y && x < z){
-		u = w.cross(Normal(1, y, z));
+	if((x < y || x == y)  && (x < z || x == z)){
+		Normal m(1, y, z);
+		std::cout << "m: " << m.X() << " " << m.Y() << " " << m.Z() << std::endl;
+		u = w.cross(m);
 	}
-	else if(y < x && y < z){
+	else if((y < x || y == x) && (y < z || y == z)){
 		u = w.cross(Normal(x, 1, z));
 	}
 	else{

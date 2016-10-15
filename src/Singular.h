@@ -72,8 +72,10 @@ private:
 public:
 	Normal() :
 		Vector(1, 0, 0) {};
-	Normal(double x, double y, double z);
-	Normal(const Vector &other);
+	Normal(double x, double y, double z) :
+		Vector(normalize(x, y, z)) {};
+	Normal(const Vector &other) :
+		Vector(normalize(other.X(), other.Y(), other.Z())) {};
 	Normal(const std::vector<Vertex> &unconstrainedPolygon);
 };
 

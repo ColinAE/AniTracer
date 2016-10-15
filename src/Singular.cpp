@@ -1,5 +1,6 @@
 
 #include "Singular.h"
+#include <iostream>
 
 // Point definitions
 Point::Point(){
@@ -74,6 +75,7 @@ double Vector::magnitude() const{
 }
 
 Vector Vector::cross(const Vector &other) const{
+	std::cout << "other: " << other.X() << " " << other.Y() << " " << other.Z() << std::endl;
 	double a = (y * other.Z()) - (z * other.Y());
 	double b = (z * other.X()) - (x * other.Z());
 	double c = (x * other.Y()) - (y * other.X());
@@ -94,10 +96,12 @@ Vector Normal::normalize(double x, double y, double z){
 	return Vector(x/mag, y/mag, z/mag);
 }
 
+/*
+
 Normal::Normal(double x, double y, double z){
 	Vector normal = normalize(x, y, z);
-	x = normal.X();
-	y = normal.Y();
+	this->x = normal.X();
+	this->y = normal.Y();
 	z = normal.Z();
 }
 
@@ -107,8 +111,10 @@ Normal::Normal(const Vector &other) : Vector(){
 	y = normal.Y();
 	z = normal.Z();
 }
+*/
 
-// This function computes
+// This function computes the face normal of a polygon that is not constrained
+// by a C++ class.
 Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 	Vector one = unconstrainedPolygon.at(0);
 	Vector two = unconstrainedPolygon.at(1);
