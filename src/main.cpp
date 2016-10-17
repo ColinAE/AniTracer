@@ -63,7 +63,7 @@ bool parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles
 			}
 
 			try {
-				if (protocol < 0 || protocol > 1) {
+				if (protocol < 1 || protocol > 2) {
 					throw pbexc;
 				}
 			} catch (exception& e) {
@@ -199,12 +199,14 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
+	vector<RGB> colors;
 	switch(protocol){
 	case 1:
 		ReadEval::REPL(set, outFile);
 		break;
 	case 2:
-		//vector<sRGB> colors = scale(set->trace());
+		colors = set->trace();
+		cout << colors.size() << endl;
 		break;
 	default:
 		break;

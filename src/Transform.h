@@ -87,6 +87,11 @@ public:
 	Translate(double x, double y, double z);
 };
 
+// IMPORTANT NOTE:
+// The scale class of transformation matrices is utilized to accomplish
+// both uniform and non-uniform scaling. Nowhere in this program is it assumed
+// which kind of scaling is being performed. It is all up to the user/calling
+// code.
 class Scale : public tMatrix{
 public:
 	Scale(double x, double y, double z);
