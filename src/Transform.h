@@ -88,8 +88,8 @@ public:
 };
 
 // IMPORTANT NOTE:
-// The scale class of transformation matrices is utilized to accomplish
-// both uniform and non-uniform scaling. Nowhere in this program is it assumed
+// The scale class of transformation matrices can do
+// both uniform and non-uniform scaling. Nowhere in the Scale code is it assumed
 // which kind of scaling is being performed. It is all up to the user/calling
 // code.
 class Scale : public tMatrix{

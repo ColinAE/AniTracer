@@ -8,6 +8,9 @@
 #ifndef RGB_H_
 #define RGB_H_
 
+#include <algorithm>
+
+
 // Unscaled RGB color object used for the intermediate stages of color calculation.
 class RGB{
 protected:
@@ -31,7 +34,15 @@ private:
 	bool inrange(int rgb);
 
 public:
-	sRGB(int red, int green, int blue);
+	sRGB(double red, double green, double blue) :
+		RGB(red, green, blue) {};
+	sRGB(const RGB &urgbs);
+
+};
+
+namespace colors{
+	int normalize(double oldval, double min, double max);
+	std::vector<sRGB> scale(const std::vector<RGB> &urgbs);
 };
 
 #endif

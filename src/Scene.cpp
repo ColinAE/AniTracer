@@ -8,6 +8,8 @@
 #include "Scene.h"
 #include <iostream>
 
+const bool debug = true;
+
 Model::Model(string in, int vertexCount, int faceCount, const std::vector<Polygon> &faces,
 		string properties, string vproperties){
 	this->vertexCount = vertexCount;
@@ -59,10 +61,15 @@ void Model::collide(const Ray &incoming, int &closestIndex, Polygon &closest, do
 		if(examine < smallestDist){
 			smallestDist = examine;
 			closestIndex = index;
+			std::cout << "cindex " << closestIndex << std::endl;
 		}
 		index++;
 	});
-	closest = faces.at(index);
+	if(debug){ std::cout << "face index" << std::endl;
+	std::cout << "size: " << faces.size() << " -- index: " << closestIndex << std::endl;
+	}
+	closest = faces.at(closestIndex);
+	if(debug) std::cout << "reached" << std::endl;
 	distance = smallestDist;
 }
 
@@ -127,8 +134,8 @@ int Polyhedron::matchMaterial(int polyIndex) const{
 }
 
 Collision Polyhedron::collide(const Ray &incoming) const{
-	int closestIndex;
-	Polygon closest;
+	int closestIndex = 0;
+	Polygon closest = Polygon();
 	double distance = -1;
 	model->collide(incoming, closestIndex, closest, distance);
 	if(distance < 0){
@@ -257,6 +264,7 @@ RGB Scene::see(const Ray &ray){
 std::vector<RGB> Scene::trace(){
 	std::vector<Ray> rays = camera.shootAll();
 	std::vector<RGB> colors;
+	if(debug) std::cout << "Rays created. Beginning tracing." << std::endl;
 	std::for_each(rays.begin(), rays.end(), [&](Ray ray){
 		colors.push_back(see(ray));
 	});

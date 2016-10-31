@@ -200,12 +200,15 @@ int main(int argc, char *argv[]){
 	}
 
 	vector<RGB> colors;
+	vector<sRGB> scaled;
 	switch(protocol){
 	case 1:
 		ReadEval::REPL(set, outFile);
 		break;
 	case 2:
 		colors = set->trace();
+		scaled = colors::scale(colors);
+		tracerio::writePPM(scaled, set->getCamera(), outFile);
 		cout << colors.size() << endl;
 		break;
 	default:

@@ -22,7 +22,7 @@ RGB Light::operator*(const double &scalar) const{
 }
 
 Material::Material(){
-	mindex = begin = end = lambdaOne = lambdaTwo = lambdaThree =
+	mindex = begin = end = lambdaOne = lambdaTwo = lambdaThree = -1;
 	k = alpha = translucence = -1;
 	null = true;
 }

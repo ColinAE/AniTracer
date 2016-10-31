@@ -88,6 +88,14 @@ double Vector::dot(const Vector &other) const{
 	double c = z * other.Z();
 	return a + b + c;
 }
+
+Vector Vector::project(const Vector &other) const{
+	return Normal(other) * (this->dot(other) / other.dot(other));
+}
+
+Vector Vector::project(const Normal &other) const {
+	return other * this->dot(other);
+}
 ////
 
 // Normal definitions

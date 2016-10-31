@@ -94,6 +94,7 @@ public:
 	Scene(const Scene &);
 	void update(tMatrix, int);
 	int objCount(){ return objects.size(); }
+	Camera getCamera() const { return camera; }
 	std::vector<std::vector<string>> toString();
 	std::vector<RGB> trace();
 };

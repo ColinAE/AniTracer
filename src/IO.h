@@ -10,18 +10,19 @@
 #ifndef IO_H
 #define IO_H
 
-#include "Singular.h"
-#include "Scene.h"
-#include "RGB.h"
-#include "Camera.h"
-#include "GeometricOperations.h"
-#include "LightMaterial.h"
 #include <vector>
 #include <string>
 #include <stdio.h>
 #include <exception>
 #include <fstream>
 #include <iostream>
+#include "Singular.h"
+#include "Scene.h"
+#include "RGB.h"
+#include "Camera.h"
+#include "GeometricOperations.h"
+#include "LightMaterial.h"
+
 using std::ifstream;
 using std::exception;
 using std::string;
@@ -50,10 +51,11 @@ void readMaterials(std::vector<Light> &lights, std::vector<Material> &materials,
 Model* buildModel(string modelFilename, int modnum,
 		const std::vector<Material> &materials);
 
-// Output a ply file.
+// Output a .ply file.
 void writePLY(Scene* set, string out);
 
-//void writePPM(vector<RGB>, Camera, char *);
+// Output a .ppm file.
+void writePPM(std::vector<sRGB> image, Camera camera, string out);
 
 };
 

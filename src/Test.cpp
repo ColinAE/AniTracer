@@ -39,10 +39,8 @@ TEST(PointTest, PointBasic){
 	EXPECT_TRUE(tpoint == cpoint);
 }
 
-/*
-
 //Test Vector constructors.
-TEST(VectorTest, Constructors){
+TEST_F(VectorTest, Constructors){
 	Vector def = Vector();
 	Vector tvec = Vector(1, 2, 3);
 	Vector cvec = Vector(tvec);
@@ -71,7 +69,7 @@ TEST_F(VectorTest, Addition){
 	Vector examine = left + right;
 	EXPECT_TRUE(tolerates(5, examine.X()));
 	EXPECT_TRUE(tolerates(7, examine.Y()));
-	EXPECT_TRUE(tolerates(8, examine.Z()));
+	EXPECT_TRUE(tolerates(9, examine.Z()));
 }
 
 //Test Vector subtraction.
@@ -111,7 +109,7 @@ TEST_F(VectorTest, Magnitude){
 	double examine = left.magnitude();
 	EXPECT_TRUE(tolerates(3.7416, examine));
 	examine = right.magnitude();
-	EXPECT_TRUE(tolerates(3.7416, examine));
+	EXPECT_TRUE(tolerates(8.7749, examine));
 }
 
 //Test Vector cross product method.
@@ -152,20 +150,19 @@ TEST(NormalTest, Constructors){
  */
 
 
-/*
 //
 
 //Test Screen functionality.
 TEST(ScreenTest, All){
-	Screen def = Screen();
+	Screen defaultCons = Screen();
 	Screen gar(1, 2, 3, 4);
 	Screen copy = gar;
 
 	//Test default constructor.
-	EXPECT_EQ(0, gar.getlowu());
-	EXPECT_EQ(0, gar.getlowv());
-	EXPECT_EQ(0, gar.gethighu());
-	EXPECT_EQ(0, gar.gethighv());
+	EXPECT_EQ(0, defaultCons.getlowu());
+	EXPECT_EQ(0, defaultCons.getlowv());
+	EXPECT_EQ(0, defaultCons.gethighu());
+	EXPECT_EQ(0, defaultCons.gethighv());
 
 	//Test constructor.
 	EXPECT_EQ(1, gar.getlowu());
@@ -292,7 +289,7 @@ TEST_F(MatrixTest, At){
 	EXPECT_EQ(1, imatrix.at(0, 0));
 	EXPECT_EQ(1, imatrix.at(1, 1));
 	EXPECT_EQ(0, imatrix.at(1, 2));
-	EXPECT_EQ(3, imatrix.at(3, 2));
+	EXPECT_EQ(0, imatrix.at(3, 2));
 }
 
 TEST_F(MatrixTest, Multiply){
@@ -334,8 +331,8 @@ TEST_F(MatrixTest, Transpose){
 TEST_F(MatrixTest, Accessors){
 	std::vector<double> examine {1, 2, 3, 4};
 	EXPECT_TRUE(examine == nmatrix.row(0));
-	examine = nmatrix.getElms();
-	EXPECT_TRUE(examine == nelms);
+	std::vector<std::vector<double>> examine2 = nmatrix.getElms();
+	EXPECT_TRUE(examine2 == nelms);
 	EXPECT_EQ(4, nmatrix.rowCount());
 	EXPECT_EQ(4, nmatrix.colCount());
 }
@@ -346,7 +343,7 @@ TEST_F(TransformTest, Constructors){
 	std::vector<double> three {0, 0, 1, 0};
 	std::vector<double> four {0, 0, 0, 1};
 	std::vector<std::vector<double>> ielms {one, two, three, four};
-	tMatrix imatrix(Matrix(ielms));
+	tMatrix imatrix = tMatrix(Matrix(ielms));
 
 	EXPECT_TRUE(imatrix == transformer.transformationMatrix());
 }
@@ -367,7 +364,7 @@ TEST(TMatrixTest, AxisAngle){
 	EXPECT_TRUE(examine == test);
 }
 
-TEST(TmatrixTest, Zrotation){
+TEST(TMatrixTest, Zrotation){
 	double theta = 90;
 	std::vector<double> one {cos(theta), -sin(theta), 0, 0};
 	std::vector<double> two {sin(theta), cos(theta), 0, 0};
@@ -386,7 +383,8 @@ TEST_F(TransformTest, AxisAngle){
 	std::vector<double> v {0, -.22404, -.447, 0};
 	std::vector<double> w {0, 44700, -.22404, 0};
 	std::vector<double> last {0, 0, 0, 1};
-	std::vector<std::vector<double>> composed {u, v, w, last};
+	std::vector<std::vector<double>> elms {u, v, w, last};
+	tMatrix composed = tMatrix(Matrix(elms));
 
 	EXPECT_TRUE(composed == transformer.transformationMatrix());
 }
@@ -399,11 +397,10 @@ TEST_F(TransformTest, ScaleByTranslate){
 	std::vector<double> three {0, 0, 2, 5};
 	std::vector<double> four {0, 0, 0, 2};
 	std::vector<std::vector<double>> elms {one, two, three, four};
-	tMatrix composed(Matrix(elms));
+	tMatrix composed = tMatrix(Matrix(elms));
 
 	EXPECT_TRUE(composed == transformer.transformationMatrix());
 }
-*/
 
 int main(int argc, char* argv[]){
 	testing::InitGoogleTest(&argc, argv);

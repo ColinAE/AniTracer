@@ -335,12 +335,12 @@ void tracerio::writePLY(Scene* set, string out){
 }
 
 // Writes the .ppm image
-void writePPM(std::vector<RGB> image, Camera camera, char *out){
+void tracerio::writePPM(std::vector<sRGB> image, Camera camera, string out){
 	Screen screen = camera.getScreen();
-	int rows = screen.getlowu() - screen.gethighu() + 1;
+	int rows = screen.gethighu() - screen.getlowu() + 1;
 	int columns = screen.gethighv() - screen.getlowv() + 1;
-
-	ofstream output(out);
+	string filename = out + ".ppm";
+	ofstream output(filename);
 
 	cout << "Writing PPM" << endl;
 	output << "P3" << endl;
@@ -348,7 +348,7 @@ void writePPM(std::vector<RGB> image, Camera camera, char *out){
 	int inc = 0;
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < columns; j++){
-			RGB cur = image[inc];
+			sRGB cur = image[inc];
 			//cout << cur.red() << endl;
 			output << cur.red() << " " << cur.green() << " " << cur.blue();
 			if(j != columns - 1){

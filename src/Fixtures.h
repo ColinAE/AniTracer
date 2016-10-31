@@ -23,9 +23,13 @@ using std::string;
 class VectorTest: public ::testing::Test{
 public:
 	VectorTest();
+
+	/* These three functions commented out to serve as a reminder of the other
+	 * test figure methods.
 	void SetUp();
 	void TearDown();
 	~VectorTest();
+	*/
 
 	Vector left, right;
 };
@@ -34,8 +38,6 @@ class VerticeTest: public ::testing::Test{
 public:
 	VerticeTest();
 	void SetUp();
-	void TearDown();
-	~VerticeTest();
 
 	Vertex first, second, third, fourth, fifth;
 	std::vector<Vertex> vertices;
@@ -44,10 +46,7 @@ public:
 
 class MatrixTest: public ::testing::Test{
 public:
-	MatrixTest();
 	void SetUp();
-	void TearDown();
-	~MatrixTest();
 
 	Matrix imatrix;
 	std::vector<std::vector<double>> nelms;
@@ -56,10 +55,7 @@ public:
 
 class TransformTest: public ::testing::Test{
 public:
-	TransformTest();
 	void SetUp();
-	void TearDown();
-	~TransformTest();
 
 	Transformer transformer;
 };
