@@ -214,9 +214,9 @@ Translate::Translate(double x, double y, double z)
 	elements[2][2] = 1;
 	elements[3][3] = 1;
 
-	elements[3][0] = x;
-	elements[3][1] = y;
-	elements[3][2] = z;
+	elements[0][3] = x;
+	elements[1][3] = y;
+	elements[2][3] = z;
 }
 
 Scale::Scale(double x, double y, double z)
@@ -249,7 +249,7 @@ Axisangle::Axisangle(double x, double y, double z)
 	x = w.X();
 	y = w.Y();
 	z = w.Z();
-	std::cout << x << " " << y << " " << z << std::endl;
+	std::cout << "W: " << x << " " << y << " " << z << std::endl;
 
 	//Acquire 'u' row using the lowest-equals-one-renormalize-then-cross-with-w heuristic.
 	Normal u;
@@ -264,11 +264,11 @@ Axisangle::Axisangle(double x, double y, double z)
 	else{
 		u = w.cross(Normal(x, y, 1));
 	}
-	std::cout << u.X() << " " << u.Y() << " " << u.Z() << " " << std::endl;
+	std::cout << "u: " << u.X() << " " << u.Y() << " " << u.Z() << " " << std::endl;
 
 	//Acquire 'v' row by crossing 'w' with 'u'. Could also swap 'w' and 'u' in the cross product.
 	Normal v = w.cross(u);
-	std::cout << v.X() << " " << v.Y() << " " << v.Z() << " " << std::endl;
+	std::cout << "v: " <<  v.X() << " " << v.Y() << " " << v.Z() << " " << std::endl;
 
 	std::vector<double> one {u.X(), u.Y(), u.Z(), 0};
 	std::vector<double> two {v.X(), v.Y(), v.Z(), 0};

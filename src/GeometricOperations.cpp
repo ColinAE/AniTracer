@@ -54,11 +54,11 @@ std::vector<Polygon> geops::triangularize(const Polygon &face){
 
 		triangle.push_back(face[0]);
 		triangle.push_back(face[1]);
-		triangle.push_back(face[3]);
+		triangle.push_back(face[2]);
 		triangles.push_back(Polygon(triangle));
 
 		triangle.clear();
-		triangle.push_back(face[1]);
+		triangle.push_back(face[0]);
 		triangle.push_back(face[2]);
 		triangle.push_back(face[3]);
 		triangles.push_back(Polygon(triangle));

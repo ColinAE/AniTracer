@@ -227,9 +227,9 @@ TEST_F(VerticeTest, TriangularizeSquare){
 	EXPECT_TRUE(second == one[1]);
 	EXPECT_TRUE(third == one[2]);
 
-	EXPECT_TRUE(second == one[0]);
-	EXPECT_TRUE(third == one[1]);
-	EXPECT_TRUE(fourth == one[2]);
+	EXPECT_TRUE(first == two[0]);
+	EXPECT_TRUE(third == two[1]);
+	EXPECT_TRUE(fourth == two[2]);
 }
 
 TEST_F(VerticeTest, TriangularizePolygon){
@@ -246,24 +246,24 @@ TEST_F(VerticeTest, TriangularizePolygon){
 	Polygon five = triangles.at(4);
 
 	EXPECT_TRUE(first == one[0]);
-	EXPECT_TRUE(second == one[1]);
-	EXPECT_TRUE(centroid == one[2]);
+	EXPECT_TRUE(centroid == one[1]);
+	EXPECT_TRUE(second == one[2]);
 
 	EXPECT_TRUE(second == two[0]);
-	EXPECT_TRUE(third == two[1]);
-	EXPECT_TRUE(centroid == two[2]);
+	EXPECT_TRUE(centroid == two[1]);
+	EXPECT_TRUE(third == two[2]);
 
 	EXPECT_TRUE(third == three[0]);
-	EXPECT_TRUE(fourth == three[1]);
-	EXPECT_TRUE(centroid == three[2]);
+	EXPECT_TRUE(centroid == three[1]);
+	EXPECT_TRUE(fourth == three[2]);
 
 	EXPECT_TRUE(fourth == four[0]);
-	EXPECT_TRUE(fifth == four[1]);
-	EXPECT_TRUE(centroid == four[2]);
+	EXPECT_TRUE(centroid == four[1]);
+	EXPECT_TRUE(fifth == four[2]);
 
 	EXPECT_TRUE(fifth == five[0]);
-	EXPECT_TRUE(first == five[1]);
-	EXPECT_TRUE(centroid == five[2]);
+	EXPECT_TRUE(centroid == five[1]);
+	EXPECT_TRUE(first == five[2]);
 }
 
 TEST(RGBTest, All){
@@ -353,8 +353,8 @@ TEST_F(MatrixTest, Identity){
 }
 
 TEST(TMatrixTest, AxisAngle){
-	std::vector<double> u {0, -(1/sqrt(2)), 0, 0};
-	std::vector<double> v {0, 0, -(1/sqrt(2)), 0};
+	std::vector<double> u {0, 0, 1, 0};
+	std::vector<double> v {0, -1, 0, 0};
 	std::vector<double> w {1, 0, 0, 0};
 	std::vector<double> last {0, 0, 0, 1};
 	std::vector<std::vector<double>> composed {u, v, w, last};
@@ -380,12 +380,11 @@ TEST(TMatrixTest, Zrotation){
 TEST_F(TransformTest, AxisAngle){
 	transformer.axis_angle(1, 0, 0, 90);
 	std::vector<double> u {1, 0, 0, 0};
-	std::vector<double> v {0, -.22404, -.447, 0};
-	std::vector<double> w {0, 44700, -.22404, 0};
+	std::vector<double> v {0, -.448074, -.893997, 0};
+	std::vector<double> w {0, .893997, -.448074, 0};
 	std::vector<double> last {0, 0, 0, 1};
 	std::vector<std::vector<double>> elms {u, v, w, last};
 	tMatrix composed = tMatrix(Matrix(elms));
-
 	EXPECT_TRUE(composed == transformer.transformationMatrix());
 }
 
@@ -395,7 +394,7 @@ TEST_F(TransformTest, ScaleByTranslate){
 	std::vector<double> one {2, 0, 0, 5};
 	std::vector<double> two {0, 2, 0, 5};
 	std::vector<double> three {0, 0, 2, 5};
-	std::vector<double> four {0, 0, 0, 2};
+	std::vector<double> four {0, 0, 0, 1};
 	std::vector<std::vector<double>> elms {one, two, three, four};
 	tMatrix composed = tMatrix(Matrix(elms));
 

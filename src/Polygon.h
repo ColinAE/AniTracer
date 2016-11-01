@@ -35,6 +35,7 @@ public:
 	int getVertexCount() const { return vertexCount; }
 	Point centroid() const { return center; }
 	Vertex operator[](int index) const { return vertices[index]; }
+	Vertex at(int index) const {return vertices.at(index); }
 	Normal normal() const { return norm; }
 	string toString() const;
 	void update(const tMatrix trans);

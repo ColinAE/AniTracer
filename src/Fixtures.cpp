@@ -23,11 +23,13 @@ void VerticeTest::SetUp(){
 	second = Vertex(1, 0, 0);
 	third = Vertex(1, 1, 0);
 	fourth = Vertex(0, 1, 0);
-	fifth = Vertex(-1, .5, 0);
 	std::vector<Vertex> all {first, second, third, fourth};
 	vertices = all;
 
 	poly = Polygon(vertices);
+
+	// The fifth point is added to the polygon in TriangularizePolygon
+	fifth = Vertex(-1, .5, 0);
 }
 
 void MatrixTest::SetUp(){
