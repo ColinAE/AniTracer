@@ -60,5 +60,13 @@ public:
 	Transformer transformer;
 };
 
+class ColorTest: public ::testing::Test{
+public:
+	ColorTest();
+
+	Collision collision;
+	Light light;
+};
+
 
 #endif

@@ -23,6 +23,7 @@ public:
 	double blue() const { return b; }
 	RGB operator+(const RGB &other) const;
 	RGB operator*(const double &scalar) const;
+	bool operator==(const RGB &other) const;
 };
 
 // Scaled RGB color object.

@@ -53,3 +53,9 @@ void TransformTest::SetUp(){
 	transformer = Transformer();
 }
 
+ColorTest::ColorTest(){
+	Material mat = Material(0, 0, 0, 1, 2, 3, .5, .5, .5);
+	collision = Collision(Ray(), 10, Normal(), mat);
+	light = Light(10, 10, 10, 0, 0, 0, false);
+}
+

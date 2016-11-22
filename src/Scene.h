@@ -86,8 +86,6 @@ private:
 	std::vector<Light> lights;
 	Camera camera;
 
-	RGB calcAmbient(const Collision &collision, const Light &light) const;
-	RGB calcSpecularDiffuse(const Collision &collision);
 	RGB see(const Ray &ray);
 public:
 	Scene(const Camera &, const std::vector<Model*> &, const std::vector<Light> &, const std::vector<Material> &);
@@ -97,6 +95,11 @@ public:
 	Camera getCamera() const { return camera; }
 	std::vector<std::vector<string>> toString();
 	std::vector<RGB> trace();
+};
+
+namespace colors{
+	RGB ambient(const Collision &collision, const Light &light);
+	RGB specularDiffuse(const Collision &collision, const std::vector<Light> &lights);
 };
 
 #endif

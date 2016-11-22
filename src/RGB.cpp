@@ -72,6 +72,13 @@ RGB RGB::operator*(const double &scalar) const {
 	return RGB(scalar * r, scalar * g, scalar * b);
 }
 
+bool RGB::operator==(const RGB &other) const {
+	if(r == other.red() && g == other.green() && b == other.blue())
+		return true;
+	else
+		return false;
+}
+
 //sRGB definitions
 
 sRGB::sRGB(const RGB &urgb) :

@@ -401,6 +401,12 @@ TEST_F(TransformTest, ScaleByTranslate){
 	EXPECT_TRUE(composed == transformer.transformationMatrix());
 }
 
+TEST_F(ColorTest, Ambient){
+	RGB goal = RGB(10, 20, 30);
+	RGB actual = colors::ambient(collision, light);
+	EXPECT_TRUE(goal == actual);
+}
+
 int main(int argc, char* argv[]){
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();

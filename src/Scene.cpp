@@ -191,7 +191,47 @@ std::vector<std::vector<string>> Scene::toString(){
 	return allInfo;
 }
 
-RGB Scene::calcAmbient(const Collision &collision, const Light &light) const{
+
+RGB Scene::see(const Ray &ray){
+	if(ray.reachedLimit()){
+		return RGB();
+	}
+	Collision current = Collision();
+	Collision examine;
+	std::for_each(objects.begin(), objects.end(), [&](const Object *object){
+		examine = object->collide(ray);
+		if(current > examine){
+			current = examine;
+		}
+	});
+	Light ambientLight;
+	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
+		if(!light.hasPosition()){
+			ambientLight = light;
+			return;
+		}
+	});
+	RGB ambient = colors::ambient(current, ambientLight);
+	RGB specular = colors::specularDiffuse(current, lights);
+
+	//RGB reflection = see(current.reflect());
+	//RGB refraction = see(current.refract());
+	return ambient + specular;
+}
+
+std::vector<RGB> Scene::trace(){
+	std::vector<Ray> rays = camera.shootAll();
+	std::vector<RGB> colors;
+	if(debug) std::cout << "Rays created. Beginning tracing." << std::endl;
+	std::for_each(rays.begin(), rays.end(), [&](Ray ray){
+		colors.push_back(see(ray));
+	});
+	return colors;
+}
+
+namespace colors{
+
+RGB ambient(const Collision &collision, const Light &light){
 	Material mat = collision.collisionMaterial();
 	RGB brightness = light.color();
 	double r = mat.lone() * brightness.red();
@@ -200,7 +240,7 @@ RGB Scene::calcAmbient(const Collision &collision, const Light &light) const{
 	return RGB(r, g, b);
 }
 
-RGB Scene::calcSpecularDiffuse(const Collision &collision){
+RGB specularDiffuse(const Collision &collision, const std::vector<Light> &lights){
 	RGB ret = RGB();
 	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
 		Normal L = Vector(light.getPosition()) - Vector(collision.getPosition());
@@ -234,39 +274,4 @@ RGB Scene::calcSpecularDiffuse(const Collision &collision){
 	return ret;
 }
 
-RGB Scene::see(const Ray &ray){
-	if(ray.reachedLimit()){
-		return RGB();
-	}
-	Collision current = Collision();
-	Collision examine;
-	std::for_each(objects.begin(), objects.end(), [&](const Object *object){
-		examine = object->collide(ray);
-		if(current > examine){
-			current = examine;
-		}
-	});
-	Light ambientLight;
-	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
-		if(!light.hasPosition()){
-			ambientLight = light;
-			return;
-		}
-	});
-	RGB ambient = calcAmbient(current, ambientLight);
-	RGB specular = calcSpecularDiffuse(current);
-
-	//RGB reflection = see(current.reflect());
-	//RGB refraction = see(current.refract());
-	return ambient + specular;
-}
-
-std::vector<RGB> Scene::trace(){
-	std::vector<Ray> rays = camera.shootAll();
-	std::vector<RGB> colors;
-	if(debug) std::cout << "Rays created. Beginning tracing." << std::endl;
-	std::for_each(rays.begin(), rays.end(), [&](Ray ray){
-		colors.push_back(see(ray));
-	});
-	return colors;
-}
+};

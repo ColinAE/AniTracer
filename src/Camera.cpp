@@ -10,7 +10,13 @@
 #include "Camera.h"
 
 //TODO figure out what to do with Camera default constructor
-Camera::Camera(){}
+Camera::Camera(){
+	focalPoint = Point();
+	lookat = Point(); //Point the camera is looking at
+	vup = Vector(); //View Plane Normal
+	focalLength = -1; //Length from focal point to screen
+	screen = Screen();
+}
 
 Camera::Camera(Point focalPoint, Point lookat, Vector v, double focalLength, Screen scr){
 	this->focalPoint = focalPoint;
