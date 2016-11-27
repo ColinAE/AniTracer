@@ -65,8 +65,9 @@ void Model::collide(const Ray &incoming, int &closestIndex, Polygon &closest, do
 		}
 		index++;
 	});
-	if(debug){ std::cout << "face index" << std::endl;
-	std::cout << "size: " << faces.size() << " -- index: " << closestIndex << std::endl;
+	if(debug){
+		std::cout << "face index" << std::endl;
+		std::cout << "size: " << faces.size() << " -- index: " << closestIndex << std::endl;
 	}
 	closest = faces.at(closestIndex);
 	if(debug) std::cout << "reached" << std::endl;
@@ -164,7 +165,7 @@ Scene::Scene(const Camera &camera, const std::vector<Model*> &models, const std:
 		}
 		objects.push_back(new Polyhedron(current, objMats, i));
 	}
-	std::cout << "object size: " << objects.size() << std::endl;
+	if(debug) std::cout << "object size: " << objects.size() << std::endl;
 }
 
 
@@ -211,8 +212,8 @@ RGB Scene::see(const Ray &ray){
 			return;
 		}
 	});
-	RGB ambient = colors::ambient(current, ambientLight);
-	RGB specular = colors::specularDiffuse(current, lights);
+	RGB ambient = surfaceColor::ambient(current, ambientLight);
+	RGB specular = surfaceColor::specularDiffuse(current, lights);
 
 	//RGB reflection = see(current.reflect());
 	//RGB refraction = see(current.refract());
@@ -229,14 +230,15 @@ std::vector<RGB> Scene::trace(){
 	return colors;
 }
 
-namespace colors{
+namespace surfaceColor{
 
 RGB ambient(const Collision &collision, const Light &light){
 	Material mat = collision.collisionMaterial();
-	RGB brightness = light.color();
-	double r = mat.lone() * brightness.red();
-	double g = mat.ltwo() * brightness.green();
-	double b = mat.lthree() * brightness.blue();
+	if(debug) std::cout << "r: " << light.red() << " g: " << light.green() << " b: " << light.blue() << std::endl;
+	if(debug) std::cout << "lone: " << mat.lone() << " ltwo: " << mat.ltwo() << " lthree: " << mat.lthree() << std::endl;
+	double r = mat.lone() * light.red();
+	double g = mat.ltwo() * light.green();
+	double b = mat.lthree() * light.blue();
 	return RGB(r, g, b);
 }
 

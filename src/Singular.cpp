@@ -2,6 +2,8 @@
 #include "Singular.h"
 #include <iostream>
 
+const bool debug = false;
+
 // Point definitions
 Point::Point(){
 	x = 0;
@@ -75,7 +77,7 @@ double Vector::magnitude() const{
 }
 
 Vector Vector::cross(const Vector &other) const{
-	std::cout << "other: " << other.X() << " " << other.Y() << " " << other.Z() << std::endl;
+	if(debug) std::cout << "other: " << other.X() << " " << other.Y() << " " << other.Z() << std::endl;
 	double a = (y * other.Z()) - (z * other.Y());
 	double b = (z * other.X()) - (x * other.Z());
 	double c = (x * other.Y()) - (y * other.X());

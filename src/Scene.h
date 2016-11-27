@@ -97,7 +97,7 @@ public:
 	std::vector<RGB> trace();
 };
 
-namespace colors{
+namespace surfaceColor{
 	RGB ambient(const Collision &collision, const Light &light);
 	RGB specularDiffuse(const Collision &collision, const std::vector<Light> &lights);
 };

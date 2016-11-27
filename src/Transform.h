@@ -36,6 +36,7 @@ class Matrix{
 protected:
 	std::vector< std::vector<double> > elements;
 	int rows, columns;
+
 public:
 	Matrix();
 	Matrix(const std::vector< std::vector<double> > &);

@@ -27,7 +27,7 @@ Material::Material(){
 	null = true;
 }
 
-Material::Material(int mindex, int begin, int end, double lambdaOne, double lambdaTwo, double lambaThree, double reflectance, double shininess, double translucence){
+Material::Material(int mindex, int begin, int end, double lambdaOne, double lambdaTwo, double lambdaThree, double reflectance, double shininess, double translucence){
 	this->mindex = mindex;
 	this->begin = begin;
 	this->end = end;

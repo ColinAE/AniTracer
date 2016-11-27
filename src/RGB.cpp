@@ -73,7 +73,12 @@ RGB RGB::operator*(const double &scalar) const {
 }
 
 bool RGB::operator==(const RGB &other) const {
-	if(r == other.red() && g == other.green() && b == other.blue())
+	double tolerance = .00000001;
+	double rdiff = abs(r - other.red());
+	double gdiff = abs(g - other.green());
+	double bdiff = abs(b - other.blue());
+
+	if(rdiff < tolerance && gdiff < tolerance && bdiff < tolerance)
 		return true;
 	else
 		return false;

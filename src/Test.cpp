@@ -358,9 +358,9 @@ TEST(TMatrixTest, AxisAngle){
 	std::vector<double> w {1, 0, 0, 0};
 	std::vector<double> last {0, 0, 0, 1};
 	std::vector<std::vector<double>> composed {u, v, w, last};
-	Matrix test(composed);
+	Matrix test = Matrix(composed);
 
-	Axisangle examine(1, 0, 0);
+	Axisangle examine = Axisangle(1, 0, 0);
 	EXPECT_TRUE(examine == test);
 }
 
@@ -403,7 +403,9 @@ TEST_F(TransformTest, ScaleByTranslate){
 
 TEST_F(ColorTest, Ambient){
 	RGB goal = RGB(10, 20, 30);
-	RGB actual = colors::ambient(collision, light);
+	RGB actual = surfaceColor::ambient(collision, light);
+	std::cout << "r: " << goal.red() << " g: " << goal.green() << " b: " << goal.blue() << std::endl;
+	std::cout << "r: " << actual.red() << " g: " << actual.green() << " b: " << actual.blue() << std::endl;
 	EXPECT_TRUE(goal == actual);
 }
 

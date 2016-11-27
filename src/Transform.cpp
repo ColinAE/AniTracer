@@ -11,6 +11,8 @@
 
 #include <iostream>
 
+const bool debug = true;
+
 namespace lops{
 
 
@@ -76,6 +78,7 @@ Matrix::Matrix(const std::vector< std::vector<double> > &elms){
 	int overlen = elms.size();
 	int lastlen = 0;
 	int nextlen = 0;
+
 	//Make sure the elements are triangular
 	for(int i = 1; i < overlen; i++){
 		lastlen = elms[i - 1].size();
@@ -102,10 +105,13 @@ Matrix::Matrix(const Matrix &other){
 }
 
 bool Matrix::operator==(const Matrix &other){
+	double tolerance = .00000001;
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < columns; j++){
-			if(elements[i][j] != other.at(i, j))
+			double difference = abs(elements[i][j] - other.at(i, j));
+			if(difference > tolerance){
 				return false;
+			}
 		}
 	}
 	return true;
@@ -239,7 +245,7 @@ Identity::Identity()
 
 Axisangle::Axisangle(double x, double y, double z)
 	: tMatrix(){
-	std::cout << "axis " << std::endl;
+	if(debug) std::cout << "axis " << std::endl;
 
 	//The axis of rotation.
 	Vector axis(x, y, z);
@@ -249,26 +255,31 @@ Axisangle::Axisangle(double x, double y, double z)
 	x = w.X();
 	y = w.Y();
 	z = w.Z();
-	std::cout << "W: " << x << " " << y << " " << z << std::endl;
+	if(debug) std::cout << "W: " << x << " " << y << " " << z << std::endl;
 
 	//Acquire 'u' row using the lowest-equals-one-renormalize-then-cross-with-w heuristic.
 	Normal u;
 	if((x < y || x == y)  && (x < z || x == z)){
 		Normal m(1, y, z);
-		std::cout << "m: " << m.X() << " " << m.Y() << " " << m.Z() << std::endl;
 		u = w.cross(m);
+		if(debug) std::cout << "m: " << m.X() << " " << m.Y() << " " << m.Z() << std::endl;
 	}
 	else if((y < x || y == x) && (y < z || y == z)){
-		u = w.cross(Normal(x, 1, z));
+		Normal m(x, 1, z);
+		u = w.cross(m);
+		if(debug) std::cout << "m: " << m.X() << " " << m.Y() << " " << m.Z() << std::endl;
 	}
 	else{
-		u = w.cross(Normal(x, y, 1));
+		Normal m(x, y, 1);
+		u = w.cross(m);
+		if(debug) std::cout << "m: " << m.X() << " " << m.Y() << " " << m.Z() << std::endl;
 	}
-	std::cout << "u: " << u.X() << " " << u.Y() << " " << u.Z() << " " << std::endl;
+	if(debug) std::cout << "u: " << u.X() << " " << u.Y() << " " << u.Z() << " " << std::endl;
 
-	//Acquire 'v' row by crossing 'w' with 'u'. Could also swap 'w' and 'u' in the cross product.
+	//Acquires 'v' row by crossing 'w' with 'u'.
+	// You could also swap 'w' and 'u' in the cross product.
 	Normal v = w.cross(u);
-	std::cout << "v: " <<  v.X() << " " << v.Y() << " " << v.Z() << " " << std::endl;
+	if(debug) std::cout << "v: " <<  v.X() << " " << v.Y() << " " << v.Z() << " \n" << std::endl;
 
 	std::vector<double> one {u.X(), u.Y(), u.Z(), 0};
 	std::vector<double> two {v.X(), v.Y(), v.Z(), 0};
@@ -291,14 +302,15 @@ void Transformer::translate(double x, double y, double z){
 void Transformer::axis_angle(double x, double y, double z, double theta){
 	//Final axis angle matrix, z rotation matrix. Transpose the bases matrix to acquire inverse.
 	Axisangle basesMatrix(x, y, z);
-	std::cout << basesMatrix.toString() << std::endl;
+	if(debug) std::cout << basesMatrix.toString() << std::endl;
 	Zrotation rotationMatrix(theta);
-	std::cout << rotationMatrix.toString() << std::endl;
+	if(debug) std::cout << rotationMatrix.toString() << std::endl;
 	tMatrix invBases = basesMatrix.transpose();
-	std::cout << invBases.toString() << std::endl;
+	if(debug) std::cout << invBases.toString() << std::endl;
 
 	//Update the transformation matrix with the required axis angle matrices.
 	tMatrix composed = invBases.multiply(rotationMatrix.multiply(basesMatrix));
+	if(debug) std::cout << composed.toString() << std::endl;
 	update(composed);
 }
 

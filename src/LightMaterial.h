@@ -20,6 +20,9 @@ public:
 	Light();
 	Light(double red, double green, double blue, double x, double y, double z, bool notAmbient);
 	RGB color() const { return rgb; }
+	double red() const { return rgb.red(); }
+	double green() const { return rgb.green(); }
+	double blue() const { return rgb.blue(); }
 	Point getPosition() const { return position; }
 	bool hasPosition() const { return notAmbient; }
 	RGB operator*(const double &scalar) const;
