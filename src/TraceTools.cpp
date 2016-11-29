@@ -7,8 +7,6 @@
 
 #include "TraceTools.h"
 
-const double epsilon = .000000000001;
-
 Collision::Collision(){
 	travelDistance = -1;
 	collidingRay = Ray();
@@ -39,36 +37,6 @@ Ray Collision::refract(){
 	return collidingRay.refract(travelDistance, surfaceNorm);
 }
 
-// TODO: needs explanation.
-double rayTracingTools::detectTriangleCollision(const Ray &incoming,
-		const std::vector<Vertex> &vertices){
-	Vector a = vertices.at(0);
-	Vector b = vertices.at(1);
-	Vector c = vertices.at(2);
-
-	Vector c1 = a - b;
-	Vector c2 = a - c;
-	Normal D = incoming.getDirection();
-	Vector aug = a - incoming.getOrigin();
-
-	double maxlen = std::numeric_limits<double>::max(); //TODO: what does this do?
-
-	double M = rayTracingTools::calcM(c1, c2, D);
-	double tau = rayTracingTools::calcTau(c1, c2, aug, M);
-
-	if(tau + epsilon < 0 || tau - epsilon > maxlen){
-		return maxlen;
-	}
-	double gamma = rayTracingTools::calcGamma(c1, D, aug, M);
-	if(gamma + epsilon < 0 || gamma - epsilon > 1){
-		return maxlen;
-	}
-	double beta = rayTracingTools::calcBeta(c2, D, aug, M);
-	if(beta + epsilon < 0 || beta - epsilon > 1 - gamma)
-		return maxlen;
-	return tau;
-
-}
 
 /* FOR REFERENCE
 //Check if the ray collides with a given triangle

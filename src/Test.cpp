@@ -416,6 +416,10 @@ TEST_F(ColorTest, Ambient){
 	EXPECT_TRUE(goal == actual);
 }
 
+//TEST_F(CollisionTest, TriangleCollision){
+
+//}
+
 int main(int argc, char* argv[]){
 	testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
