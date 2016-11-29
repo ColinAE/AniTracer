@@ -57,8 +57,8 @@ public:
 	double magnitude() const;
 	Vector cross(const Vector &other) const; // Compute cross product.
 	double dot(const Vector &other) const; // Compute dot product.
+	double C(const Vector &other) const;
 	Vector project(const Vector &other) const;
-	Vector project(const Normal &other) const;
 	Point destination() const { return Point(x, y, z); }
 };
 

@@ -213,11 +213,11 @@ RGB Scene::see(const Ray &ray){
 		}
 	});
 	RGB ambient = surfaceColor::ambient(current, ambientLight);
-	RGB specular = surfaceColor::specularDiffuse(current, lights);
+	//RGB specular = surfaceColor::specularDiffuse(current, lights);
 
 	//RGB reflection = see(current.reflect());
 	//RGB refraction = see(current.refract());
-	return ambient + specular;
+	return ambient;
 }
 
 std::vector<RGB> Scene::trace(){

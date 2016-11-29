@@ -45,9 +45,9 @@ double Camera::calcMidzoneOffset(const Vector &u, const Vector &v, const Vector 
 }
 
 std::vector<Ray> Camera::shootAll(){
-	Vector focal(focalPoint);
-	Vector look(lookat);
-	Normal vpn(look - focal); //View plane normal
+	Vector focal = Vector(focalPoint);
+	Vector look = Vector(lookat);
+	Normal vpn = Normal(look - focal); //View plane normal
 	Vector focalVec = vpn * focalLength;
 	Vector toScreenCenter = focal + focalVec;
 	Normal unorm = vpn.cross(vup); // Horizontal pixel position normal

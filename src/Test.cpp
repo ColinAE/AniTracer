@@ -126,6 +126,13 @@ TEST_F(VectorTest, DotProduct){
 	EXPECT_TRUE(tolerates(32, examine));
 }
 
+//Test Projection of one vector onto another
+TEST_F(VectorTest, Projection){
+	Vector examine = left.project(right);
+	Vector expected = Vector(128/77, 160/77, 192/77);
+	EXPECT_TRUE(examine == expected);
+}
+
 //
 //Test Normal constructors.
 //The Normal constructors are more complex than other singular types.

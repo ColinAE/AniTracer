@@ -24,9 +24,11 @@ Point::Point(const Point &other){
 }
 
 bool Point::operator==(const Point &other) const{
-	if(x == other.X() &&
-			y == other.Y() &&
-			z == other.Z()){
+	double tolerance = .00000001;
+	double xdiff = abs(x - other.X());
+	double ydiff = abs(y - other.Y());
+	double zdiff = abs(z - other.Z());
+	if(xdiff < tolerance &&	ydiff < tolerance && zdiff < tolerance){
 		return true;
 	}
 	return false;
@@ -91,13 +93,14 @@ double Vector::dot(const Vector &other) const{
 	return a + b + c;
 }
 
-Vector Vector::project(const Vector &other) const{
-	return Normal(other) * (this->dot(other) / other.dot(other));
+double Vector::C(const Vector &other) const{
+	return (this->dot(other) / other.dot(other));
 }
 
-Vector Vector::project(const Normal &other) const {
-	return other * this->dot(other);
+Vector Vector::project(const Vector &other) const{
+	return other * this->C(other);
 }
+
 ////
 
 // Normal definitions
