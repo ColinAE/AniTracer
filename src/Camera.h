@@ -24,7 +24,7 @@ private:
 	double calcMidzoneOffset(const Vector &u, const Vector &v, const Vector &f);
 public:
 	Camera();
-	Camera(Point focalPoint, Point lookat, Vector v, double focalLength, Screen scr);
+	Camera(Point focalPoint, Point lookat, Vector vup, double focalLength, Screen screen);
 	Camera(const Camera &other);
 	Point getFocalPoint() const { return focalPoint; }
 	Point getLookat() const { return lookat; }

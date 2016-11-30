@@ -15,5 +15,6 @@ using std::string;
 
 string itos(int);
 string dtos(double);
+bool tolerates(double left, double right);
 
 #endif /* UTILITY_H_ */

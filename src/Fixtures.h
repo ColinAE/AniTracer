@@ -72,7 +72,8 @@ class CollisionTest: public ::testing::Test{
 public:
 	CollisionTest();
 
-	Camera cam;
+	Ray ray;
+	Polygon face;
 
 };
 

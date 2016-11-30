@@ -18,12 +18,12 @@ Camera::Camera(){
 	screen = Screen();
 }
 
-Camera::Camera(Point focalPoint, Point lookat, Vector v, double focalLength, Screen scr){
+Camera::Camera(Point focalPoint, Point lookat, Vector vup, double focalLength, Screen screen){
 	this->focalPoint = focalPoint;
 	this->lookat = lookat;
-	this->vup = v;
+	this->vup = vup;
 	this->focalLength = focalLength;
-	this->screen = scr;
+	this->screen = screen;
 }
 
 Camera::Camera(const Camera &other){

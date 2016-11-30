@@ -59,3 +59,9 @@ ColorTest::ColorTest(){
 	light = Light(10, 10, 10, 0, 0, 0, false);
 }
 
+CollisionTest::CollisionTest(){
+	const std::vector<Vertex> vertices = {Vertex(1, -1, -10), Vertex(0, 1, -10), Vertex(-1, -1, -10)};
+	face = Polygon(vertices);
+
+}
+

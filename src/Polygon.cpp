@@ -8,6 +8,7 @@
 #include "Polygon.h"
 #include "GeometricOperations.h"
 #include "TraceTools.h"
+#include <iostream>
 
 Polygon::Polygon(){
 	vertices.push_back(Vertex());

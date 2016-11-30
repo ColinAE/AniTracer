@@ -9,16 +9,6 @@
 #include <cmath>
 #include "Fixtures.h"
 
-const double tolerance = .00000001;
-
-bool tolerates(double left, double right){
-	if(abs(left - right) < tolerance){
-		return true;
-	} else {
-		return false;
-	}
-}
-
 //Test all Point class functionality.
 TEST(PointTest, PointBasic){
 	Point def = Point();
@@ -416,9 +406,27 @@ TEST_F(ColorTest, Ambient){
 	EXPECT_TRUE(goal == actual);
 }
 
-//TEST_F(CollisionTest, TriangleCollision){
+TEST_F(CollisionTest, TriangleCollision){
+	ray = Ray(Point(0, 0, 0), Vector(0, 0, -1), 1);
+	double dist = face.collide(ray);
+	EXPECT_TRUE(tolerates(10, dist));
 
-//}
+	ray = Ray(Point(10, 0, 0), Vector(-1, 0, -1), 1);
+	dist = face.collide(ray);
+	EXPECT_TRUE(tolerates(14.14213562, dist));
+
+	ray = Ray(Point(0, 0, 0), Vector(1, 0, 0), 1);
+	dist = face.collide(ray);
+	EXPECT_TRUE(tolerates(std::numeric_limits<double>::max(), dist));
+
+	ray = Ray(Point(0, 0, 0), Vector(0, 1, 0), 1);
+	dist = face.collide(ray);
+	EXPECT_TRUE(tolerates(std::numeric_limits<double>::max(), dist));
+
+	ray = Ray(Point(0, 0, 0), Vector(0, 0, 1), 1);
+	dist = face.collide(ray);
+	EXPECT_TRUE(tolerates(std::numeric_limits<double>::max(), dist));
+}
 
 int main(int argc, char* argv[]){
 	testing::InitGoogleTest(&argc, argv);
