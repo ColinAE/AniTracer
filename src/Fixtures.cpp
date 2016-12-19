@@ -65,3 +65,19 @@ CollisionTest::CollisionTest(){
 
 }
 
+RGBTestF::RGBTestF(){
+	RGB oneRGB(1000, 200, 8003);
+	RGB twoRGB(100, 2000, 5000);
+	RGB threeRGB(500, 1000, 6123);
+
+	urgbs.push_back(oneRGB);
+	urgbs.push_back(twoRGB);
+	urgbs.push_back(threeRGB);
+}
+
+CameraTest::CameraTest(){
+	try{
+		cam = tracerio::()
+	}
+}
+

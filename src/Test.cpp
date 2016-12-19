@@ -175,7 +175,7 @@ TEST(ScreenTest, All){
 }
 
 //Test Camera constructors.
-TEST(CameraTest, Constructors){
+TEST_F(CameraTest, Constructors){
 	Camera def = Camera();
 	Camera cam = Camera(Point(), Point(1, 1, 1), Vector(2, 2, 2), 0, Screen());
 
@@ -184,6 +184,10 @@ TEST(CameraTest, Constructors){
 	EXPECT_TRUE(Vector(2, 2, 2) == cam.getVUP());
 	EXPECT_TRUE(0 == cam.getFocalLength());
 	EXPECT_TRUE(Screen().getlowu() == cam.getScreen().getlowu());
+}
+
+Test_F(CameraTest, RayShoot){
+	std::vector<Ray> rays = cam.shootAll();
 }
 
 TEST_F(VerticeTest, Centroid){
@@ -401,8 +405,6 @@ TEST_F(TransformTest, ScaleByTranslate){
 TEST_F(ColorTest, Ambient){
 	RGB goal = RGB(10, 20, 30);
 	RGB actual = surfaceColor::ambient(collision, light);
-	std::cout << "r: " << goal.red() << " g: " << goal.green() << " b: " << goal.blue() << std::endl;
-	std::cout << "r: " << actual.red() << " g: " << actual.green() << " b: " << actual.blue() << std::endl;
 	EXPECT_TRUE(goal == actual);
 }
 
@@ -426,6 +428,26 @@ TEST_F(CollisionTest, TriangleCollision){
 	ray = Ray(Point(0, 0, 0), Vector(0, 0, 1), 1);
 	dist = face.collide(ray);
 	EXPECT_TRUE(tolerates(std::numeric_limits<double>::max(), dist));
+}
+
+TEST(ColorNormalizeTest, Normalize){
+	int got = colors::normalize(50, 10, 50);
+	int expected = 255;
+	EXPECT_TRUE(tolerates(got, expected));
+
+	got = colors::normalize(10, 10, 50);
+	expected = 0;
+	EXPECT_TRUE(tolerates(got, expected));
+
+	got = colors::normalize(30, 10, 50);
+	expected = 127;
+	EXPECT_TRUE(tolerates(got, expected));
+}
+
+TEST_F(RGBTestF, ScaleRGB){
+	std::vector<sRGB> scaled = colors::scale(urgbs);
+	std::vector<sRGB> expected {sRGB(29, 3, 255), sRGB(0, 61, 158), sRGB(12, 29, 194)};
+	EXPECT_TRUE(scaled == expected);
 }
 
 int main(int argc, char* argv[]){

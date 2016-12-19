@@ -159,6 +159,10 @@ Ray::Ray(const Point &center, const Vector &direction, int limit){
 	this->limit = limit;
 }
 
+bool Ray::operator==(const Ray &other){
+	return origin == other.getOrigin() && direction == other.getDirection();
+}
+
 // TODO: Reflect and refract methods need more explanation.
 // The reflect and refract methods return rays with new origins and directions, along
 // with this ray's limit minus one.

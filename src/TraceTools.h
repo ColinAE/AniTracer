@@ -27,8 +27,10 @@ public:
 	Collision();
 	Collision(const Ray &collided, double distance, const Normal &norm,
 			const Material &material);
+	Collision(const Collision &other);
 	bool operator>(const Collision &other) const; // See if this object has greater travel distance.
 	double getDistance() const { return travelDistance; }
+	Ray getCollidingRay() const { return collidingRay; }
 	Material collisionMaterial() const { return mat; }
 	Point getPosition() const { return position; }
 	Normal getNormal() const { return surfaceNorm; }

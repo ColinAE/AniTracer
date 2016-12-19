@@ -106,6 +106,7 @@ private:
 public:
 	Ray();
 	Ray(const Point &center, const Vector &direction, int limit);
+	bool operator==(const Ray &other);
 	Normal getDirection() const { return direction; }
 	Point getOrigin() const { return origin; }
 	bool reachedLimit() const { return (limit <= 0); } // Checks if ray has bounced to its limit.

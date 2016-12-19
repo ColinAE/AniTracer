@@ -11,7 +11,8 @@
 //RGB definitions
 
 int colors::normalize(double oldval, double min, double max) {
-	return ((oldval - min) / (max - min)) * 255;
+	int gar = (((oldval - min) * 255) / (max - min));
+	return gar;
 }
 
 std::vector<sRGB> colors::scale(const std::vector<RGB> &urgbs) {
@@ -46,6 +47,7 @@ std::vector<sRGB> colors::scale(const std::vector<RGB> &urgbs) {
 						colors::normalize(urgb.green(), min, max),
 						colors::normalize(urgb.blue(), min, max)));
 	});
+	std::cout << "Size: " << scaled.size() << std::endl;
 	return scaled;
 }
 
@@ -78,10 +80,7 @@ bool RGB::operator==(const RGB &other) const {
 	double gdiff = abs(g - other.green());
 	double bdiff = abs(b - other.blue());
 
-	if(rdiff < tolerance && gdiff < tolerance && bdiff < tolerance)
-		return true;
-	else
-		return false;
+	return rdiff < tolerance && gdiff < tolerance && bdiff < tolerance;
 }
 
 //sRGB definitions
@@ -98,9 +97,5 @@ sRGB::sRGB(const RGB &urgb) :
 }
 
 bool sRGB::inrange(int rgb) {
-	if (rgb >= 0 && rgb <= 255) {
-		return true;
-	} else {
-		return false;
-	}
+	return rgb >= 0 && rgb <= 255;
 }

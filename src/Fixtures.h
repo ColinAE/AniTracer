@@ -77,5 +77,19 @@ public:
 
 };
 
+class RGBTestF: public ::testing::Test{
+public:
+	RGBTestF();
+
+	std::vector<RGB> urgbs;
+};
+
+class CameraTest: public ::testing::Test{
+public:
+	CameraTest();
+
+	Camera cam;
+}
+
 
 #endif

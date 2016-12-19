@@ -7,6 +7,8 @@
 
 #include "TraceTools.h"
 
+#include <iostream>
+
 Collision::Collision(){
 	travelDistance = -1;
 	collidingRay = Ray();
@@ -19,8 +21,16 @@ Collision::Collision(const Ray &collided, double distance, const Normal &norm, c
 	travelDistance = distance;
 	collidingRay = collided;
 	surfaceNorm = norm;
-	Material mat = material;
-	Point position = (collided.getDirection() * distance + Vector(collided.getOrigin())).destination();
+	mat = material;
+	position = (collided.getDirection() * distance + Vector(collided.getOrigin())).destination();
+}
+
+Collision::Collision(const Collision &other){
+	travelDistance = other.getDistance();
+	collidingRay = other.getCollidingRay();
+	surfaceNorm = other.getNormal();
+	mat = other.collisionMaterial();
+	position = other.getPosition();
 }
 
 // Returns true if this object has a larger travel distance than the other object.

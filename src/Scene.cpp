@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include <iostream>
 
-const bool debug = true;
+const bool debug = false;
 
 Model::Model(string in, int vertexCount, int faceCount, const std::vector<Polygon> &faces,
 		string properties, string vproperties){
@@ -65,13 +65,14 @@ void Model::collide(const Ray &incoming, int &closestIndex, Polygon &closest, do
 		}
 		index++;
 	});
+	closest = faces.at(closestIndex);
+	distance = smallestDist;
+
 	if(debug){
 		std::cout << "face index" << std::endl;
 		std::cout << "size: " << faces.size() << " -- index: " << closestIndex << std::endl;
+		std::cout << "reached" << std::endl;
 	}
-	closest = faces.at(closestIndex);
-	if(debug) std::cout << "reached" << std::endl;
-	distance = smallestDist;
 }
 
 void Model::update(tMatrix trans){
@@ -120,18 +121,21 @@ Polyhedron::~Polyhedron(){
 	delete model;
 }
 
+// Finds the material that is associated with the polygon at polyIndex.
 int Polyhedron::matchMaterial(int polyIndex) const{
 	int beginning;
 	int ending;
-	int index = 1;
+	int index = 0;
+	int found = 0;
 	std::for_each(materials.begin(), materials.end(), [&](const Material &material){
 		beginning = material.beginning();
 		ending = material.ending();
 		if(beginning <= polyIndex && polyIndex <= ending){
-			return index;
+			found = index;
 		}
+		index += 1;
 	});
-	return 0;
+	return found;
 }
 
 Collision Polyhedron::collide(const Ray &incoming) const{
@@ -209,7 +213,6 @@ RGB Scene::see(const Ray &ray){
 	std::for_each(lights.begin(), lights.end(), [&](const Light &light){
 		if(!light.hasPosition()){
 			ambientLight = light;
-			return;
 		}
 	});
 	RGB ambient = surfaceColor::ambient(current, ambientLight);
