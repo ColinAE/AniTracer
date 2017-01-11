@@ -152,7 +152,7 @@ string Matrix::toString() const{
 	string all;
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < columns; j++){
-			all += dtos(elements[i][j]) + " ";
+			all += myUtilities::dtos(elements[i][j]) + " ";
 		}
 		all += "\n";
 	}

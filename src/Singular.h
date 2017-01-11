@@ -11,10 +11,11 @@
 #ifndef GEOTYPES_H
 #define GEOTYPES_H
 
-#include "Utility.h"
 #include <math.h>
 #include <string>
 #include <vector>
+
+#include "Utility.h"
 
 using std::string;
 
@@ -82,7 +83,7 @@ public:
 };
 
 // A class of points meant only to be used in the context of polygons.
-// Has a to-String methd, which Point lacks.
+// Has a to-String method, which Point lacks.
 // TODO: I will probably choose to consolidate this class with Point.
 class Vertex : public Point{
 public:
@@ -97,11 +98,11 @@ public:
 	string toString() const;
 };
 
-// Represents rays of light.
+// Represents rays of light by using an origin point and a direction of travel.
 class Ray{
 private:
 	Point origin; // The origin of the ray.
-	Normal direction; // The unit-length vector that points in the direction of the ray's travels
+	Normal direction; // The unit-length vector that points in the direction that the ray travels.
 	int limit; // The number of maximum bounces a ray can perform.
 public:
 	Ray();

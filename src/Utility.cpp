@@ -3,6 +3,8 @@
 
 using std::string;
 
+namespace myUtilities {
+
 string itos(int changethis){
 	std::ostringstream sstream;
 	sstream << changethis;
@@ -26,3 +28,5 @@ bool tolerates(double left, double right){
 		return false;
 	}
 }
+
+} // namespace myUtilities

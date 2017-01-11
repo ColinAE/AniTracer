@@ -9,6 +9,7 @@
 #define TEST_H
 
 #include <gtest/gtest.h>
+#include <vector>
 
 #include "Transform.h"
 #include "RGB.h"
@@ -16,7 +17,6 @@
 #include "Singular.h"
 #include "Polygon.h"
 #include "IO.h"
-#include <vector>
 
 using std::string;
 
@@ -89,7 +89,7 @@ public:
 	CameraTest();
 
 	Camera cam;
-}
+};
 
 
 #endif

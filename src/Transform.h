@@ -10,8 +10,10 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "Singular.h"
 #include <vector>
+
+#include "Singular.h"
+#include "Utility.h"
 
 class Matrix;
 

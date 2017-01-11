@@ -7,13 +7,11 @@
 #include <iostream>
 #include <vector>
 #include <exception>
+
 #include "Scene.h"
 #include "IO.h"
 
 using std::vector;
-using std::cout;
-using std::endl;
-using std::cin;
 using std::exception;
 
 // Functions involved in the REPL.

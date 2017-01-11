@@ -6,14 +6,14 @@ void ReadEval::REPL(Scene* set, string outFile){
 	string usein;
 	int selection;
 
-	cout << "\n~~REPL started~~\n" << endl;
+	std::cout << "\n~~REPL started~~\n" << std::endl;
 
 	// Process user commands.
 	while(true){
 		help();
 
 		// Grab single command character from the command line.
-		getline(cin, usein);
+		getline(std::cin, usein);
 		char firstin = usein[0];
 		if(!ReadEval::validCommand("TEH", firstin)){
 			ReadEval::invalid(usein);
@@ -24,8 +24,8 @@ void ReadEval::REPL(Scene* set, string outFile){
 
 			// Transform an entire model. User specifies which model
 			case 'T':
-				cout << "Objects 0 through " << set->objCount() - 1 << " available. Select object: ";
-				cin >> selection;
+				std::cout << "Objects 0 through " << set->objCount() - 1 << " available. Select object: ";
+				std::cin >> selection;
 				ReadEval::transform(set, selection, outFile);
 				break;
 
@@ -36,7 +36,7 @@ void ReadEval::REPL(Scene* set, string outFile){
 
 			// Exit out of REPL
 			case 'E':
-				cout << "Exiting REPL." << endl;
+				std::cout << "Exiting REPL." << std::endl;
 				return;
 
 			// If user enter some other command, print error message. Loop will continue.
@@ -46,7 +46,7 @@ void ReadEval::REPL(Scene* set, string outFile){
 	}
 }
 
-
+// Checks
 bool ReadEval::validCommand(string commands, char command){
 	string::size_type found = commands.find(command);
 	if(found == string::basic_string::npos){
@@ -57,11 +57,11 @@ bool ReadEval::validCommand(string commands, char command){
 	}
 }
 
-// Transformations get accumulated in
+// Transformations get accumulated within the Transformer object
 void ReadEval::transform(Scene* set, int objnum, string &outFile){
 	Transformer transformer = Transformer();
 	string usein;
-	getline(cin, usein); // Consume any newlines that may still be lingering.
+	getline(std::cin, usein); // Consume any newlines that may still be lingering.
 	tMatrix trans;
 	bool end = false;
 
@@ -70,9 +70,9 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 
 		// Grab the transformation command and the x, y, z scalars for the transformation.
 		double x, y, z, theta;
-		cout << "Transforming object " << objnum << "." << endl;
-		cout << "Input transformation:" << endl;
-		getline(cin, usein);
+		std::cout << "Transforming object " << objnum << "." << std::endl;
+		std::cout << "Input transformation:" << std::endl;
+		getline(std::cin, usein);
 		char firstin = usein[0];
 
 		// Check for validity of the command. Does not check for validity of the scalars
@@ -93,11 +93,11 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 			case 'S':
 				theta = -1000;
 				//Loads usein with dummies for y and z so parseInputString won't fail.
-				usein += " " + itos(x) + " " + itos(x);
+				usein += " " + myUtilities::itos(x) + " " + myUtilities::itos(x);
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
-					cout << "Scale by " << dtos(x) << endl;
+					std::cout << "Scale by " << myUtilities::dtos(x) << std::endl;
 					transformer.scale(x, x, x);
 				}
 				break;
@@ -108,8 +108,8 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
-					cout << "Skew by (" << dtos(x) << ", " << dtos(y) << ", " << dtos(z)
-							<< ")" << endl;
+					std::cout << "Skew by (" << myUtilities::dtos(x) << ", " << myUtilities::dtos(y) << ", " << myUtilities::dtos(z)
+							<< ")" << std::endl;
 					transformer.scale(x, y, z);
 				}
 				break;
@@ -120,8 +120,8 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
-					cout << "Translate by (" << dtos(x) << ", " << dtos(y) <<
-							", " << dtos(z) << ")" << endl;
+					std::cout << "Translate by (" << myUtilities::dtos(x) << ", " << myUtilities::dtos(y) <<
+							", " << myUtilities::dtos(z) << ")" << std::endl;
 					transformer.translate(x, y, z);
 				}
 				break;
@@ -132,8 +132,8 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				if(parseInputString(usein, x, y, z, theta) == -1){
 					invalid(usein);
 				} else {
-					cout << "Rotate by (" << dtos(x) << ", " << dtos(y) << ", " << dtos(z) <<
-							")  " << dtos(theta) << endl;
+					std::cout << "Rotate by (" << myUtilities::dtos(x) << ", " << myUtilities::dtos(y) << ", " << myUtilities::dtos(z) <<
+							")  " << myUtilities::dtos(theta) << std::endl;
 					transformer.axis_angle(x, y, z, theta);
 				}
 				break;
@@ -141,10 +141,10 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 			// Finish transformation.
 			// This case triggers the update of the entire model.
 			case 'U':
-				cout << "Updating object." << endl;
+				std::cout << "Updating object." << std::endl;
 				trans = transformer.transformationMatrix();
 				set->update(trans, objnum);
-				cout << "Object updated." << endl;
+				std::cout << "Object updated." << std::endl;
 				break;
 
 			case 'F':
@@ -157,7 +157,7 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 				break;
 
 			case 'C':
-				cout << transformer.toString();
+				std::cout << transformer.toString();
 				break;
 
 			// Output transform help message.
@@ -167,7 +167,7 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 
 			// If the default case gets hit, something has gone wrong in the program.
 			default:
-				cout << "default" << endl;
+				std::cout << "default" << endl;
 				invalid(usein);
 		}
 		if(end) return; // Break out of loop.
@@ -176,14 +176,14 @@ void ReadEval::transform(Scene* set, int objnum, string &outFile){
 }
 
 void ReadEval::help(){
-	cout << "Available commands: \n" <<
+	std::cout << "Available commands: \n" <<
 	"T -- Initiate object transformation.\n" <<
 	"E -- Exit\n" <<
-	"H -- Print this help message" << endl;
+	"H -- Print this help message" << std::endl;
 }
 
 void ReadEval::helpTransform(){
-	cout << "Available commands:\n" <<
+	std::cout << "Available commands:\n" <<
 	"S sx -- Scale. sx is a scale factor.\n" <<
 	"K sx sy sz -- Skew. sx, sy, and sz are scale factors.\n" <<
 	"T tx ty tz -- Translate. tx, ty, and tz together are a translation vector.\n" <<
@@ -193,11 +193,11 @@ void ReadEval::helpTransform(){
 	"F -- Finish transformation.\n" <<
 	"W -- Write object to .ply file.\n" <<
 	"C -- Print out current transformation matrix" <<
-	"H -- Print this help message.\n" << endl;
+	"H -- Print this help message.\n" << std::endl;
 }
 
 void ReadEval::invalid(const string &errtype){
-	cout << "Invalid operation \"" << errtype << "\". Try again." << endl;
+	std::cout << "Invalid operation \"" << errtype << "\". Try again." << std::endl;
 }
 
 int ReadEval::parseInputString(string usein, double &x, double &y, double &z, double &theta){
@@ -211,7 +211,7 @@ int ReadEval::parseInputString(string usein, double &x, double &y, double &z, do
 		holder = holder.substr(pos, holder.length() - 1);
 		z = std::stod(holder, &pos);
 	} catch (exception& e){
-		cout << "Could not parse user input for x, y, or z.\n Exception: " << e.what() << endl;
+		std::cout << "Could not parse user input for x, y, or z.\n Exception: " << e.what() << std::endl;
 		return -1;
 	}
 
@@ -221,7 +221,7 @@ int ReadEval::parseInputString(string usein, double &x, double &y, double &z, do
 			theta = std::stod(holder, &pos);
 			theta = ((theta * 3.14159265)/180);
 		} catch (exception& e){
-			cout << "Could not parse user input for theta.\n Exception: " << e.what() << endl;
+			std::cout << "Could not parse user input for theta.\n Exception: " << e.what() << std::endl;
 			return -1;
 		}
 	}

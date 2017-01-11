@@ -143,7 +143,7 @@ Normal::Normal(const std::vector<Vertex> &unconstrainedPolygon){
 // Format:
 // x y z
 string Vertex::toString() const{
-	string xyz = dtos(x) + " " + dtos(y) + " " + dtos(z);
+	string xyz = myUtilities::dtos(x) + " " + myUtilities::dtos(y) + " " + myUtilities::dtos(z);
 	return xyz;
 }
 

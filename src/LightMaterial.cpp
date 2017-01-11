@@ -22,8 +22,10 @@ RGB Light::operator*(const double &scalar) const{
 }
 
 Material::Material(){
-	mindex = begin = end = lambdaOne = lambdaTwo = lambdaThree = -1;
-	k = alpha = translucence = -1;
+	begin = std::numeric_limits<double>::min();
+	end = std::numeric_limits<double>::max();
+	mindex = lambdaOne = lambdaTwo = lambdaThree = 1;
+	k = alpha = translucence = 1;
 	null = true;
 }
 

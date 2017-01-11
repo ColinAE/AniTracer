@@ -10,8 +10,9 @@
 #ifndef TRACETOOLS_H_
 #define TRACETOOLS_H_
 
-#include "LightMaterial.h"
 #include <limits>
+
+#include "LightMaterial.h"
 
 // A class that represents collisions between rays and objects.
 // This class is simplifies the act of raytracing since it gets

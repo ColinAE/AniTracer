@@ -41,9 +41,9 @@ string Model::toString(){
 		int previous = vertInd;
 		collectVertices += face.toString();
 		vertInd += face.getVertexCount();
-		collectFaces += itos(face.getVertexCount()) + " ";
+		collectFaces += myUtilities::itos(face.getVertexCount()) + " ";
 		for(int i = previous; i < vertInd; i++){
-			collectFaces += itos(i) + " ";
+			collectFaces += myUtilities::itos(i) + " ";
 		}
 		collectFaces += "\n";
 		faceInd++;
@@ -86,7 +86,6 @@ Object::~Object(){}
 Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int position){
 	this->model = model;
 	int matsSize = mats.size();
-	materials.push_back(Material());
 	for(int i = 0; i < matsSize; i++){
 		Material current = mats.at(i);
 		if(current.model() == position){
@@ -94,6 +93,11 @@ Polyhedron::Polyhedron(Model* model, const std::vector<Material> &mats, int posi
 			hasMaterial = true;
 		}
 	}
+
+	// Pushes material that is associated with all polygons to the back of the vector.
+	//
+	materials.push_back(Material());
+
 }
 
 Polyhedron::Polyhedron(const Polyhedron &source){
@@ -108,9 +112,9 @@ string Polyhedron::toString() const{
 	string body = "";
 	body += "ply\n";
 	body += "format ascii 1.0\n";
-	body += "element vertex " + itos(vertexCount) + "\n";
+	body += "element vertex " + myUtilities::itos(vertexCount) + "\n";
 	body += model->getVProperties() + "\n";
-	body += "element face " + itos(faceCount) + "\n";
+	body += "element face " + myUtilities::itos(faceCount) + "\n";
 	body += model-> getProperties() + "\n";
 	body += "end_header\n";
 	body += model->toString();
@@ -121,21 +125,18 @@ Polyhedron::~Polyhedron(){
 	delete model;
 }
 
-// Finds the material that is associated with the polygon at polyIndex.
-int Polyhedron::matchMaterial(int polyIndex) const{
+// Finds the first material that is associated with the polygon at polyIndex.
+Material Polyhedron::matchMaterial(int polyIndex) const{
 	int beginning;
 	int ending;
-	int index = 0;
-	int found = 0;
 	std::for_each(materials.begin(), materials.end(), [&](const Material &material){
 		beginning = material.beginning();
 		ending = material.ending();
 		if(beginning <= polyIndex && polyIndex <= ending){
-			found = index;
+			return material;
 		}
-		index += 1;
 	});
-	return found;
+	return Material();
 }
 
 Collision Polyhedron::collide(const Ray &incoming) const{
@@ -146,7 +147,7 @@ Collision Polyhedron::collide(const Ray &incoming) const{
 	if(distance < 0){
 		return Collision();
 	} else {
-		return Collision(incoming, distance, closest.normal(), materials.at(matchMaterial(closestIndex)));
+		return Collision(incoming, distance, closest.normal(), matchMaterial(closestIndex));
 	}
 }
 
@@ -255,7 +256,7 @@ RGB specularDiffuse(const Collision &collision, const std::vector<Light> &lights
 			return;
 		}
 
-		//specular
+		// specular
 		Material material = collision.collisionMaterial();
 		double theta = surfaceNorm.dot(L);
 		Vector R = surfaceNorm * (2 * abs(LN)) - L;
@@ -264,7 +265,7 @@ RGB specularDiffuse(const Collision &collision, const std::vector<Light> &lights
 		double rConst = material.rConst();
 		RGB specular = light * rConst;
 
-		//diffuse
+		// diffuse
 		RGB brightness = light.color();
 		double r = material.lone() * brightness.red();
 		double g = material.ltwo() * brightness.green();

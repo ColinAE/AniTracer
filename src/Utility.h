@@ -13,8 +13,12 @@
 
 using std::string;
 
+namespace myUtilities {
+
 string itos(int);
 string dtos(double);
 bool tolerates(double left, double right);
+
+} // namespace myUtilities
 
 #endif /* UTILITY_H_ */

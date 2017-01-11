@@ -10,12 +10,15 @@
 #ifndef IO_H
 #define IO_H
 
+
+#include <stdio.h>
+
 #include <vector>
 #include <string>
-#include <stdio.h>
 #include <exception>
 #include <fstream>
 #include <iostream>
+
 #include "Singular.h"
 #include "Scene.h"
 #include "RGB.h"

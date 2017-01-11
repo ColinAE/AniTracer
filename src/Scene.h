@@ -68,7 +68,7 @@ private:
 	std::vector<Material> materials;
 	bool hasMaterial = false;
 
-	int matchMaterial(int) const;
+	Material matchMaterial(int) const;
 public:
 	Polyhedron(Model *, const std::vector<Material> &, int);
 	Polyhedron(const Polyhedron &);
