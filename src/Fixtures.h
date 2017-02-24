@@ -25,7 +25,7 @@ public:
 	VectorTest();
 
 	/* These three functions commented out to serve as a reminder of the other
-	 * test figure methods.
+	 * test fixture methods.
 	void SetUp();
 	void TearDown();
 	~VectorTest();

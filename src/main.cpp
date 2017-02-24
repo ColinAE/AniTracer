@@ -28,7 +28,7 @@
 #include "BuildScene.h"
 
 namespace freeAll{
-void free(Scene* set){
+void freeObjs(Scene* set){
 	delete set;
 }
 } // namespace freeAll
@@ -70,6 +70,6 @@ int main(int argc, char *argv[]){
 	//TODO: error checking depending on protocol
 
 
-	freeAll::free(set);
+	freeAll::freeObjs(set);
 }
 

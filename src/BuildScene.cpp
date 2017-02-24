@@ -42,11 +42,11 @@ bool parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles
 				return sf::FAILURE;
 			}
 
-			// Camera flag
+		// Camera flag
 		} else if (strcmp(argv[i], "-cam") == 0) {
 			camFile = argv[i + 1];
 
-			//Model flag
+		//Model flag
 		} else if (strcmp(argv[i], "-models") == 0) {
 			int modIndex = i + 2; //Model filenames begin after the flag and count arguments.
 			i += 1; //Model count is after flag.
@@ -82,12 +82,12 @@ bool parseArgs(int argc, char* argv[], int &protocol, vector<string> &modelFiles
 
 			i += count - 1; //Advance incrementer two positions behind the next argument
 
-			//Materials flag
+		//Materials flag
 		} else if (strcmp(argv[i], "-mats") == 0) {
 			mats = argv[i + 1];
 			//No error checking
 
-			//Output flag
+		//Output flag
 		} else if (strcmp(argv[i], "-out") == 0) {
 			outFile = argv[i + 1];
 			//No error checking
